@@ -79,14 +79,12 @@ def create_app():
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
         rating_stars = "⭐" * int(rating)
-        log_entry = f"\n{'='*50}\n"
-        log_entry += f"🚀 NEW FEEDBACK RECEIVED AT {now}\n"
-        log_entry += f"{'-'*50}\n"
-        log_entry += f"👤 NAME:    {name}\n"
-        log_entry += f"📧 EMAIL:   {email}\n"
-        log_entry += f"⭐ RATING:  {rating} Stars {rating_stars}\n"
-        log_entry += f"💬 MESSAGE: {message}\n"
-        log_entry += f"{'='*50}\n"
+        log_entry = f"\n--- NEW FEEDBACK ({now}) ---\n"
+        log_entry += f"USER NAME: {name}\n"
+        log_entry += f"EMAIL: {email}\n"
+        log_entry += f"RATING: {rating} Stars {rating_stars}\n"
+        log_entry += f"MESSAGE: {message}\n"
+        log_entry += f"{'-'*40}\n"
 
         print(f"DEBUG: Saving feedback from {name} to feedbacks.txt")
 
@@ -108,28 +106,50 @@ def create_app():
         try:
             with open(log_path, "r", encoding="utf-8") as f:
                 content = f.read()
-                # Simple parsing of the custom format
-                blocks = content.split("--- NEW FEEDBACK")
+                
+                import re
+                # Split by different possible headers
+                blocks = re.split(r'--- NEW FEEDBACK|🚀 NEW FEEDBACK|={50}', content)
+
                 for block in blocks:
                     if not block.strip(): continue
                     lines = block.strip().split("\n")
                     entry = {}
                     for line in lines:
+                        # Parsing logic for both formats
                         if "USER NAME:" in line: entry['name'] = line.split("USER NAME:")[1].strip()
-                        elif "RATING:" in line: 
+                        elif "NAME:" in line: entry['name'] = line.split("NAME:")[1].strip()
+                        
+                        if "RATING:" in line: 
                             r_str = line.split("RATING:")[1].split("Stars")[0].strip()
+                            # Strip emojis if present in name field (sakshi case)
                             entry['rating'] = int(r_str) if r_str.isdigit() else 5
-                        elif "MESSAGE:" in line: entry['message'] = line.split("MESSAGE:")[1].strip()
-                        elif "(" in line and ")" in line and not entry.get('date'): 
+                        
+                        if "MESSAGE:" in line: 
+                            msg_part = line.split("MESSAGE:")[1].strip()
+                            entry['message'] = msg_part
+                        
+                        if "(" in line and ")" in line and not entry.get('date'): 
                             entry['date'] = line.split("(")[1].split(")")[0]
+                        elif "AT " in line and not entry.get('date'):
+                            entry['date'] = line.split("AT ")[1].strip()
+
                     if entry.get('name'):
                         feedbacks.append(entry)
             
-            # Return last 6 feedbacks
-            return jsonify(feedbacks[::-1][:6])
+            # Return last 10 feedbacks
+            return jsonify(feedbacks[::-1][:10])
         except Exception as e:
             print(f"Error reading feedbacks: {e}")
             return jsonify([])
+
+    @app.get("/download-feedbacks")
+    def download_feedbacks():
+        from flask import send_file
+        log_path = os.path.join(BASE_DIR, "feedbacks.txt")
+        if os.path.exists(log_path):
+            return send_file(log_path, as_attachment=True)
+        return "No feedbacks yet!"
 
     return app
 
