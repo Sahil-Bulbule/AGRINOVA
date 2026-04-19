@@ -289,21 +289,21 @@ body {
 .hero-content {
     position: relative;
     z-index: 10;
-    max-width: 1000px;
-    margin-top: -120px;
-    /* Pushed up as requested */
-    animation: heroContentAppear 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+    text-align: center;
+    padding: 0 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+    
+    /* Instant CSS Entrance - No JS Wait */
+    opacity: 0;
+    transform: translateY(30px);
+    animation: heroContentFadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s forwards;
 }
 
-@keyframes heroContentAppear {
-    from {
-        transform: translateY(50px);
-        opacity: 0;
-    }
-
+@keyframes heroContentFadeIn {
     to {
-        transform: translateY(0);
         opacity: 1;
+        transform: translateY(0);
     }
 }
 
@@ -315,106 +315,88 @@ body {
     height: 100%;
     overflow: hidden;
     z-index: -1;
+    /* Faster loading low-res fallback to prevent black screen */
+    background: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=100&w=1000&auto=format&fit=crop') center/cover no-repeat;
 }
 
-/* Track holds all 5 slides side-by-side and slides horizontally */
 .slides-track {
-    display: flex;
-    width: 500%;
-    /* 5 slides × 100% */
+    position: relative;
+    width: 100%;
     height: 100%;
-    animation: slideTrack 30s infinite;
 }
 
 .hero-slider .slide {
-    flex: 0 0 20%;
-    /* each slide = 1/5 of the 500% track = 100vw */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
     height: 100%;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    position: relative;
-    /* NO scale() → NO blur */
+    opacity: 0;
+    animation-duration: 35s; /* Slightly slower for 4K appreciation */
+    animation-iteration-count: infinite;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Alternate sliding directions for variety */
+.hero-slider .slide:nth-child(odd) { 
+    animation-name: cinematicSlideUp; 
+}
+.hero-slider .slide:nth-child(even) { 
+    animation-name: cinematicSlideDown; 
+}
+
+.hero-slider .slide:nth-child(1) { animation-delay: 0s; opacity: 1; z-index: 5; }
+.hero-slider .slide:nth-child(2) { animation-delay: 7s; z-index: 4; }
+.hero-slider .slide:nth-child(3) { animation-delay: 14s; z-index: 3; }
+.hero-slider .slide:nth-child(4) { animation-delay: 21s; z-index: 2; }
+.hero-slider .slide:nth-child(5) { animation-delay: 28s; z-index: 1; }
 
 .hero-slider .slide::after {
     content: '';
     position: absolute;
     inset: 0;
-    /* Classic cinema overlay — reliable on any image */
     background: linear-gradient(to bottom,
-            rgba(0, 0, 0, 0.52) 0%,
-            rgba(0, 0, 0, 0.28) 45%,
-            rgba(0, 0, 0, 0.65) 100%);
+            rgba(0, 0, 0, 0.55) 0%,
+            rgba(0, 0, 0, 0.3) 45%,
+            rgba(0, 0, 0, 0.7) 100%);
 }
 
-/* ── Sliding keyframes ──────────────────────────────────────────
-   Each slide is shown for ~4.5s (linear hold) then transitions
-   in ~0.5s with a smooth cubic-bezier slide to the next image.
-   Total: 5 × 5s + snappy 5 × 1s transitions = 30s
-─────────────────────────────────────────────────────────────── */
-@keyframes slideTrack {
+/* 🎥 Dramatic Slide-From-Bottom 🎥 */
+@keyframes cinematicSlideUp {
     0% {
-        transform: translateX(0);
-        animation-timing-function: linear;
+        opacity: 0;
+        transform: translateY(100%) scale(1.2);
     }
-
-    15% {
-        transform: translateX(0);
-        animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+    5%, 20% {
+        opacity: 1;
+        transform: translateY(0) scale(1.1);
     }
-
-    20% {
-        transform: translateX(-20%);
-        animation-timing-function: linear;
+    25%, 100% {
+        opacity: 0;
+        transform: translateY(-100%) scale(1);
     }
+}
 
-    35% {
-        transform: translateX(-20%);
-        animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+/* 🎥 Dramatic Slide-From-Top 🎥 */
+@keyframes cinematicSlideDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-100%) scale(1.2);
     }
-
-    40% {
-        transform: translateX(-40%);
-        animation-timing-function: linear;
+    5%, 20% {
+        opacity: 1;
+        transform: translateY(0) scale(1.1);
     }
-
-    55% {
-        transform: translateX(-40%);
-        animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
-    }
-
-    60% {
-        transform: translateX(-60%);
-        animation-timing-function: linear;
-    }
-
-    75% {
-        transform: translateX(-60%);
-        animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
-    }
-
-    80% {
-        transform: translateX(-80%);
-        animation-timing-function: linear;
-    }
-
-    95% {
-        transform: translateX(-80%);
-        animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
-    }
-
-    100% {
-        transform: translateX(0);
+    25%, 100% {
+        opacity: 0;
+        transform: translateY(100%) scale(1);
     }
 }
 
 
-/* ── Hero content — clean float, no card ── */
-.hero-content {
-    position: relative;
-    z-index: 1;
-}
 
 .hero-brand {
     font-size: 8rem;
@@ -433,7 +415,7 @@ body {
     line-height: 1.15;
     color: #ffffff;
     letter-spacing: -1px;
-    animation: textPop 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    animation: textPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s forwards;
     /*
      * KEY FIX: use filter:drop-shadow, NOT text-shadow.
      * text-shadow bleeds through the child's transparent gradient fill,
@@ -520,9 +502,24 @@ body {
 }
 
 .ai-assistant-card__label {
-    color: var(--text-light);
-    font-size: 0.95rem;
-    letter-spacing: 0.2px;
+    color: var(--primary-light);
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 800;
+    margin-bottom: 0.3rem;
+    opacity: 0.9;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.ai-assistant-card__label::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--primary-light);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--primary-light);
 }
 
 .ai-help-btn {
@@ -602,9 +599,17 @@ body {
 }
 
 .ai-modal-title {
-    font-size: 1.8rem;
-    color: #ffffff;
-    margin-bottom: 1rem;
+    font-size: 2rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #4ade80 0%, #3b82f6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1.2rem;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .ai-modal-body {
@@ -1147,8 +1152,7 @@ select option {
 .hero-btn {
     padding: 1.2rem 2.8rem;
     background: var(--primary);
-    color: #000 !important;
-    /* Changed to black as requested */
+    color: white !important;
     text-decoration: none;
     font-weight: 800;
     border-radius: 50px;
@@ -1167,8 +1171,7 @@ select option {
     width: 100%;
     padding: 1rem 1.5rem;
     background: var(--primary);
-    color: #000 !important;
-    /* Changed to black as requested */
+    color: white !important;
     border: none;
     border-radius: 50px;
     font-weight: 800;
@@ -1182,7 +1185,7 @@ select option {
 .weather-btn {
     padding: 1.2rem 2.5rem;
     background: var(--primary);
-    color: #000 !important;
+    color: white !important;
     border: none;
     border-radius: 15px;
     font-weight: 700;
@@ -1735,6 +1738,8 @@ select option {
     font-size: 4rem;
     font-weight: 950;
     background: linear-gradient(135deg, #4ade80 0%, #3b82f6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     letter-spacing: -2px;
     margin-bottom: 2rem;
@@ -2095,4 +2100,21 @@ body {
     .animated-text {
         font-size: 2.5rem;
     }
+}
+
+/* Force Footer Visibility and Depth */
+.modern-footer {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    position: relative !important;
+    z-index: 99 !important;
+}
+
+.footer-content {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    display: flex !important;
 }

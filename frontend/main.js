@@ -1,5 +1,14 @@
+<<<<<<< HEAD
 // Agrinova - Main Logic (Full-Stack Version)
 const API_BASE = "https://agrinova-smart-agriculture-web-platform-3d16.onrender.com";
+=======
+// 🔗 Backend API Configuration
+const RENDER_URL = "https://agrinova-smart-agriculture-web-platform-3d16.onrender.com"; // Corrected Render URL
+const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname === "") 
+    ? "http://localhost:5000" 
+    : RENDER_URL;
+
+>>>>>>> fae3579 (fixed bugs / updated code)
 
 // --- Global State ---
 let marketChart = null;
@@ -29,6 +38,8 @@ function initApp() {
     initTechniques();
     initIndiaMapTrends();
     initSidebar();
+}
+
 function initSidebar() {
     const sidebar = document.getElementById('sidebar');
     const toggle = document.getElementById('sidebarToggle');
@@ -47,7 +58,6 @@ function initSidebar() {
     // Close on link click
     navLinks.forEach(link => {
         link.onclick = (e) => {
-            // Optional: Smooth scroll handling already exists, but we need to close the drawer
             if (window.innerWidth < 1024) toggleSidebar(); 
         };
     });
@@ -60,41 +70,13 @@ function initSidebar() {
     });
 }
 
-    // Weather Search Listener
-    const weatherBtn = document.getElementById('getWeatherBtn');
-    if (weatherBtn) {
-        weatherBtn.onclick = () => {
-            const city = document.getElementById('cityInput').value;
-            if (city) fetchWeather(city);
-        };
-    }
-
-    // Trends Search Listener
-    const trendsBtn = document.getElementById('getTrendsBtn');
-    if (trendsBtn) {
-        trendsBtn.onclick = () => {
-            const state = document.getElementById('trendState').value;
-            const district = document.getElementById('trendDistrict').value;
-            const month = document.getElementById('trendMonth').value;
-            const year = document.getElementById('trendYear').value;
-            
-            if (!state) return showToastError("❌ Please select a State before analyzing trends.");
-            if (!district) return showToastError("❌ Please select a District before analyzing trends.");
-            if (!month) return showToastError("❌ Please select a Month before analyzing trends.");
-            if (!year) return showToastError("❌ Please select a Year before analyzing trends.");
-
-            fetchTrends(state, district, month, year);
-        };
-    }
-}
-
-function showToastError(msg) {
-    let t = document.createElement('div');
-    t.innerText = msg;
-    t.style.cssText = "position:fixed; top:30px; right:30px; background:#ef4444; color:white; padding:15px 25px; border-radius:12px; z-index:9999; box-shadow:0 10px 40px rgba(239,68,68,0.4); font-weight:700; transition:0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform:translateX(100px); opacity:0;";
-    document.body.appendChild(t);
-    setTimeout(() => { t.style.transform = 'translateX(0)'; t.style.opacity = '1'; }, 10);
-    setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(100px)'; setTimeout(()=>t.remove(), 400); }, 3500);
+// Weather Search Listener
+const weatherBtn = document.getElementById('getWeatherBtn');
+if (weatherBtn) {
+    weatherBtn.onclick = () => {
+        const city = document.getElementById('cityInput').value;
+        if (city) fetchWeather(city);
+    };
 }
 
 // --- Weather Logic ---
@@ -114,7 +96,6 @@ async function fetchWeather(city) {
 }
 
 function showWeatherError(message, fallbackCity = "Lucknow") {
-    // Show a toast warning but smoothly fallback the UI so it doesn't break
     showToastError("⚠️ Live API failed. Showing last known state for " + fallbackCity);
     renderWeather({
         city: fallbackCity,
@@ -186,10 +167,6 @@ function renderWeather(data) {
 }
 
 // --- Trends Dropdown Selector ---
-/**
- * Wires up the state dropdown, the "Other" text input visibility toggle,
- * the Fetch button, and runs validation before making an API call.
- */
 function initTrendsSelector() {
     const select      = document.getElementById('trendsStateSelect');
     const otherWrap   = document.getElementById('trendsOtherWrap');
@@ -199,25 +176,22 @@ function initTrendsSelector() {
 
     if (!select || !searchBtn) return;
 
-    // Show/hide the "Other" text field based on selection
     function toggleOtherField() {
         if (select.value === 'Other') {
-            otherWrap.classList.add('visible');
-            otherInput.focus();
+            if (otherWrap) otherWrap.classList.add('visible');
+            if (otherInput) otherInput.focus();
         } else {
-            otherWrap.classList.remove('visible');
+            if (otherWrap) otherWrap.classList.remove('visible');
             clearTrendsError();
         }
     }
 
     select.addEventListener('change', toggleOtherField);
 
-    // Validate inputs and trigger fetch
     function handleFetch() {
         clearTrendsError();
         const selected = select.value;
 
-        // Validation: nothing chosen
         if (!selected) {
             showTrendsSelectorError('⚠️ Please select a state from the dropdown.');
             return;
@@ -225,11 +199,10 @@ function initTrendsSelector() {
 
         let stateName;
         if (selected === 'Other') {
-            const custom = otherInput.value.trim();
-            // Validation: "Other" chosen but box is empty
+            const custom = otherInput ? otherInput.value.trim() : "";
             if (!custom) {
                 showTrendsSelectorError('⚠️ Please enter a state name in the text field.');
-                otherInput.focus();
+                if (otherInput) otherInput.focus();
                 return;
             }
             stateName = custom;
@@ -242,21 +215,19 @@ function initTrendsSelector() {
 
     searchBtn.addEventListener('click', handleFetch);
 
-    // Allow Enter key inside the "Other" text box
-    otherInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') handleFetch();
-    });
+    if (otherInput) {
+        otherInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleFetch();
+        });
+    }
 }
 
-/** Shows a styled inline error below the selector row.
- *  type: 'error' (default, red) | 'info' (amber) */
 function showTrendsSelectorError(msg, type = 'error') {
     const err = document.getElementById('trendsError');
     if (!err) return;
     err.textContent = msg;
     err.setAttribute('data-type', type === 'info' ? 'info' : '');
     err.style.display = 'flex';
-    // Trigger reflow so the CSS transition fires
     void err.offsetWidth;
     err.classList.add('visible');
 }
@@ -273,14 +244,11 @@ async function fetchLiveTrends(state) {
     try {
         const res  = await fetch(`${API_BASE}/live-trends?state=${encodeURIComponent(state)}`);
         const data = await res.json();
-
-        // Backend returned a "not supported" or error message
         if (data.success === false) {
             showTrendsSelectorError(`ℹ️ ${data.message}`, 'info');
             showLiveTrendsError();
             return;
         }
-
         if (!res.ok) throw new Error(`Status ${res.status}`);
         renderLiveTrends(data.crops || [], data.state);
     } catch (err) {
@@ -305,15 +273,13 @@ function renderLiveTrends(crops, stateName = "Selected State") {
         card.className = 'trends-card';
         card.style.cssText = "display: flex; flex-direction: column; justify-content: space-between; height: 100%;";
         
-        // Use realistic icons
         const iconUrls = {
             "Wheat": "wheat.png", "Rice": "rice-bowl.png", "Onion": "onion.png", 
             "Tomato": "tomato.png", "Sugarcane": "sugarcane.png"
         };
         const iconName = iconUrls[p.name] || "leaf.png";
         
-        // Mock the change since main API only provides raw price now
-        const isUp = (p.price % 3) !== 0; // 66% chance to be up
+        const isUp = (p.price % 3) !== 0; 
         const changeValue = Math.floor(p.price * (Math.random() * 0.08 + 0.01)); 
         const trendClass = isUp ? 'trend-up' : 'trend-down';
         const trendIcon = isUp ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down';
@@ -330,7 +296,6 @@ function renderLiveTrends(crops, stateName = "Selected State") {
                     <span style="font-size: 0.95rem; color: rgba(203,213,225,0.9); font-weight: 700; opacity: 0.9;"> /q</span>
                 </div>
             </div>
-            
             <div style="display:flex; flex-direction:column; align-items:center; width:100%; margin-top: auto;">
                 <div class="trend-badge ${trendClass}" style="margin:0 0 1.5rem; padding: 0.5rem 1.2rem; border-radius:30px; font-weight:800; font-size:1.05rem; display: inline-flex; align-items: center; gap: 0.5rem; justify-content:center; width:max-content; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
                     <i class="fas ${trendIcon}"></i> ${trendText}
@@ -353,16 +318,11 @@ async function fetchTrends(state = "", district = "", month = "", year = "") {
         if (district) params.append('district', district);
         if (month) params.append('month', month);
         if (year) params.append('year', year);
-        
-        if (params.toString()) {
-            url += `?${params.toString()}`;
-        }
+        if (params.toString()) url += `?${params.toString()}`;
 
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Status ${res.status}`);
         const data = await res.json();
-        
-        // Check if we have multiple datasets or labels
         renderChart(data.labels, data.datasets, month);
     } catch (err) {
         console.error("Trends fetch failed:", err);
@@ -380,11 +340,12 @@ function showTrendsError() {
 }
 
 function renderChart(labels, datasets, selectedMonth = "") {
-    const ctx = document.getElementById('marketChart').getContext('2d');
+    const chartNode = document.getElementById('marketChart');
+    if (!chartNode) return;
+    const ctx = chartNode.getContext('2d');
     if (marketChart) marketChart.destroy();
 
     const isBar = selectedMonth !== "";
-    
     const iconUrls = {
         "Wheat": "https://img.icons8.com/color/48/wheat.png",
         "Rice": "https://img.icons8.com/color/48/rice-bowl.png",
@@ -403,7 +364,6 @@ function renderChart(labels, datasets, selectedMonth = "") {
             img.height = 24;
             pStyle = img;
         }
-
         return {
             ...ds,
             fill: !isBar,
@@ -418,44 +378,21 @@ function renderChart(labels, datasets, selectedMonth = "") {
 
     marketChart = new Chart(ctx, {
         type: isBar ? 'bar' : 'line',
-        data: {
-            labels: labels,
-            datasets: enhancedDatasets
-        },
+        data: { labels: labels, datasets: enhancedDatasets },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            interaction: {
-                mode: 'index',
-                intersect: false,
-            },
+            interaction: { mode: 'index', intersect: false },
             plugins: {
                 legend: { 
                     position: 'top',
-                    labels: { 
-                        color: '#ffffff', 
-                        font: { weight: 'bold', size: 13 },
-                        usePointStyle: true,
-                        padding: 20
-                    }
+                    labels: { color: '#ffffff', font: { weight: 'bold', size: 13 }, usePointStyle: true, padding: 20 }
                 },
-                tooltip: { 
-                    backgroundColor: 'rgba(0,0,0,0.8)',
-                    padding: 12,
-                    cornerRadius: 10,
-                    titleColor: '#10b981'
-                }
+                tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', padding: 12, cornerRadius: 10, titleColor: '#10b981' }
             },
             scales: {
-                y: { 
-                    beginAtZero: false, 
-                    grid: { color: 'rgba(255,255,255,0.08)' },
-                    ticks: { color: '#cbd5e1' }
-                },
-                x: { 
-                    grid: { display: false },
-                    ticks: { color: '#cbd5e1' }
-                }
+                y: { beginAtZero: false, grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#cbd5e1' } },
+                x: { grid: { display: false }, ticks: { color: '#cbd5e1' } }
             }
         }
     });
@@ -475,7 +412,6 @@ async function fetchSchemes(category) {
 function renderSchemes(data) {
     const grid = document.getElementById('schemesGrid');
     if (!grid) return;
-
     grid.innerHTML = "";
     data.forEach(s => {
         const card = document.createElement('div');
@@ -497,7 +433,6 @@ function renderSchemes(data) {
 
 // --- Tabs & Event Listeners ---
 function initTabs() {
-    // Scheme Tabs
     document.querySelectorAll('.btn-tab-scheme').forEach(tab => {
         tab.onclick = () => {
             document.querySelectorAll('.btn-tab-scheme').forEach(t => t.classList.remove('active'));
@@ -506,14 +441,12 @@ function initTabs() {
         };
     });
 
-    // Advisory Portal Tabs
     const advisoryTabs = Array.from(document.querySelectorAll('.btn-tab')).filter(tab => !tab.classList.contains('btn-tab-scheme'));
     const advisoryPanels = Array.from(document.querySelectorAll('.tab-content-panel'));
     const defaultTabId = 'tab1';
     const defaultButton = advisoryTabs.find(tab => tab.getAttribute('data-tab') === defaultTabId) || advisoryTabs[0];
     const defaultPanel = document.getElementById(defaultTabId) || advisoryPanels[0];
 
-    // Ensure Planning is active by default
     advisoryTabs.forEach(tab => tab.classList.remove('active'));
     advisoryPanels.forEach(panel => panel.classList.remove('active'));
     if (defaultButton) defaultButton.classList.add('active');
@@ -535,30 +468,21 @@ function initTabs() {
 function initFeedbackForm() {
     const form = document.getElementById('feedbackForm');
     if (!form) return;
-
     const stars = Array.from(document.querySelectorAll('.rating-star'));
     let selectedRating = 0;
-
     const updateStarDisplay = (rating) => {
         stars.forEach(star => {
             const value = Number(star.getAttribute('data-rating'));
-            if (value <= rating) {
-                star.classList.add('fas');
-                star.classList.remove('far');
-            } else {
-                star.classList.remove('fas');
-                star.classList.add('far');
-            }
+            if (value <= rating) { star.classList.add('fas'); star.classList.remove('far'); } 
+            else { star.classList.remove('fas'); star.classList.add('far'); }
         });
     };
-
     stars.forEach(star => {
         star.addEventListener('click', () => {
             selectedRating = Number(star.getAttribute('data-rating'));
             updateStarDisplay(selectedRating);
         });
     });
-
     form.onsubmit = async (e) => {
         e.preventDefault();
         const payload = {
@@ -567,16 +491,14 @@ function initFeedbackForm() {
             rating: selectedRating || 5,
             message: document.getElementById('message').value
         };
-
         try {
             const res = await fetch(`${API_BASE}/feedback`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
+                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
             });
             const result = await res.json();
             if (result.success) {
                 form.innerHTML = `<div style="text-align:center; padding:2.5rem 1rem; color:#f8fafc;"><h3 style="margin:0 0 0.4rem;">Thank you!</h3><p style="margin:0; color:#cbd5e1;">Your feedback has been submitted successfully.</p></div>`;
+                showToastError("✅ Feedback Saved to feedbacks.txt!");
             }
         } catch (err) {
             console.error(err);
@@ -585,46 +507,65 @@ function initFeedbackForm() {
     };
 }
 
+// --- Recommendation Logic (CRITICAL FIX) ---
 function initRecommendationForm() {
     const form = document.getElementById('recommendationForm');
     if (!form) return;
     form.onsubmit = async (e) => {
         e.preventDefault();
+        
+        const btn = form.querySelector('button[type="submit"]');
+        const output = document.getElementById('recommendationResult');
+        
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating Advice...';
+        }
+
+        const tempEl = document.getElementById('advisoryTemp');
+        const soilEl = document.getElementById('soilType');
+        const monthEl = document.getElementById('advisoryMonth');
+        const rainEl = document.getElementById('advisoryRainfall');
+
         const payload = {
-            soil_type: document.getElementById('soilType').value,
-            month: document.getElementById('advisoryMonth').value,
-            temperature: Number(document.getElementById('advisoryTemp').value),
-            rainfall: document.getElementById('advisoryRainfall').value ? Number(document.getElementById('advisoryRainfall').value) : null
+            soil_type: soilEl ? soilEl.value : "",
+            month: monthEl ? monthEl.value : "",
+            temperature: tempEl ? Number(tempEl.value) : 0,
+            rainfall: (rainEl && rainEl.value) ? Number(rainEl.value) : null
         };
+
         try {
+            console.log("Sending Recommendation Payload:", payload);
             const res = await fetch(`${API_BASE}/recommend`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
             });
             const data = await res.json();
-            lastRecommendationData = {
-                crop: data.recommended_crop,
-                reason: data.reason,
-                month: payload.month,
-                soilType: payload.soil_type,
-                temperature: payload.temperature,
-                rainfall: payload.rainfall
-            };
-            const output = document.getElementById('recommendationResult');
+            console.log("Received Recommendation Data:", data);
+
+            lastRecommendationData = { crop: data.recommended_crop, reason: data.reason, ...payload };
+            
             if (output) {
                 output.style.display = 'flex';
                 output.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:0.5rem; color: var(--primary); font-weight:800; font-size:1.2rem;">
-                        <i class="fas fa-check-circle"></i> Recommended Crop: ${data.recommended_crop}
+                    <div style="display:flex; align-items:center; gap:0.5rem; color: var(--primary); font-weight:800; font-size:1.4rem; margin-bottom:0.5rem;">
+                        <i class="fas fa-star" style="color:#fbbf24;"></i> Recommended Crop: ${data.recommended_crop}
                     </div>
-                    <div style="opacity:0.9; line-height:1.5;">
-                        ${data.reason}
-                    </div>
+                    <div style="opacity:0.95; line-height:1.6; font-size:1.1rem; border-left: 4px solid var(--primary); padding-left: 1.2rem;">${data.reason}</div>
                 `;
+                output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
         } catch (error) {
-            console.error(error);
+            console.error("Recommendation fetch failed:", error);
+            showToastError("❌ Connection Error: Backend is likely starting up. Please wait 10 seconds and try again.");
+            if (output) {
+                output.style.display = 'flex';
+                output.innerHTML = `<div style="color:#ef4444; font-weight:700;"><i class="fas fa-exclamation-triangle"></i> Error: Unable to reach server. Please try again soon.</div>`;
+            }
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-microchip"></i> Generate Live Recommendation';
+            }
         }
     };
 }
@@ -632,36 +573,26 @@ function initRecommendationForm() {
 function getAIAdvice(type) {
     if (type === "weather") {
         if (!lastWeatherData) return "Please check live weather first to get the best farming advice.";
-        const temp = lastWeatherData.temp ?? lastWeatherData.main?.temp ?? 0;
-        const desc = (lastWeatherData.description || lastWeatherData.weather?.[0]?.description || "").toLowerCase();
+        const temp = lastWeatherData.temp ?? 0;
+        const desc = (lastWeatherData.description || "").toLowerCase();
         const advice = [];
-        if (temp >= 34) {
-            advice.push("High heat is expected, so water your crop early in the morning and avoid midday irrigation.");
-        } else if (temp >= 28) {
-            advice.push("Warm conditions mean keep soil moist and protect young plants from afternoon stress.");
-        } else {
-            advice.push("Cool weather is good for crops now; hold irrigation and avoid waterlogging.");
-        }
-        if (desc.includes("rain") || desc.includes("shower")) {
-            advice.push("Use the expected rain to reduce manual watering and protect seeds from heavy showers.");
-        }
+        if (temp >= 34) advice.push("High heat is expected, so water your crop early in the morning and avoid midday irrigation.");
+        else if (temp >= 28) advice.push("Warm conditions mean keep soil moist and protect young plants from afternoon stress.");
+        else advice.push("Cool weather is good for crops now; hold irrigation and avoid waterlogging.");
+        if (desc.includes("rain") || desc.includes("shower")) advice.push("Use the expected rain to reduce manual watering and protect seeds from heavy showers.");
         return advice.join(" ");
     }
-
     if (type === "price") {
-        if (!lastLiveTrend) return "Select a state on the trends map to see current price movement and get explainers.";
-        return `Prices are moving because demand for ${lastLiveTrend.toLowerCase()} is strong and local supply is tighter than usual. Seasonal demand and transport conditions also affect rates.`;
+        if (!lastLiveTrend) return "Select a state on the trends map to see current price movement.";
+        const trend = lastLiveTrend;
+        return `Market analysis indicates that ${trend.dominating || trend.crop || 'this crop'} is currently dominating the market in ${trend.state}. Prices for ${trend.dominating} are at a peak of ₹${trend.highest_price}, while others like ${trend.lowest_crop} remain stable. This shift is driven by local supply demands and logistics.`;
     }
-
     if (type === "crop") {
-        if (!lastRecommendationData) return "Generate a crop recommendation first, then tap this button for a simple reason why it is a good choice.";
+        if (!lastRecommendationData) return "Generate a crop recommendation first, then tap this button.";
         const crop = lastRecommendationData.crop || "This crop";
-        const month = lastRecommendationData.month || "this season";
-        const soil = lastRecommendationData.soilType ? `on ${lastRecommendationData.soilType.toLowerCase()} soil` : "";
-        return `${crop} is suitable for ${month} ${soil}. It fits current climate needs, has good market demand, and can deliver healthy profit with careful management.`;
+        return `${crop} is suitable for the current conditions. It fits current climate needs and can deliver healthy profit.`;
     }
-
-    return "Use the smart help buttons inside the section for quick farming advice.";
+    return "Use the smart help buttons for quick farming advice.";
 }
 
 function openAIModal(title, message) {
@@ -682,329 +613,158 @@ function initAIAssistant() {
     document.querySelectorAll('.ai-help-btn').forEach(btn => {
         btn.onclick = () => {
             const type = btn.getAttribute('data-ai-type');
-            const titleMap = {
-                weather: 'Weather Advice',
-                price: 'Price Change Help',
-                crop: 'Crop Recommendation Help'
-            };
+            const titleMap = { weather: 'Weather Advice', price: 'Price Change Help', crop: 'Crop Recommendation Help' };
             openAIModal(titleMap[type] || 'Smart Help', getAIAdvice(type));
         };
     });
-
-    const closeButton = document.getElementById('aiModalCloseBtn');
-    if (closeButton) closeButton.onclick = closeAIModal;
-
+    const closeBtn = document.getElementById('aiModalCloseBtn');
+    if (closeBtn) closeBtn.onclick = closeAIModal;
     const overlay = document.getElementById('aiAssistantModal');
-    if (overlay) {
-        overlay.onclick = (event) => {
-            if (event.target === overlay) closeAIModal();
-        };
-    }
-
-    document.addEventListener('keyup', (event) => {
-        if (event.key === 'Escape') closeAIModal();
-    });
+    if (overlay) overlay.onclick = (e) => { if (e.target === overlay) closeAIModal(); };
+    document.addEventListener('keyup', (e) => { if (e.key === 'Escape') closeAIModal(); });
 }
 
 function initIndiaMapTrends() {
     if (typeof L === "undefined") return;
-
     const mapNode = document.getElementById("indiaStateTrendsMap");
     if (!mapNode) return;
-
-    indiaMap = L.map("indiaStateTrendsMap", {
-        zoomControl: true,
-        scrollWheelZoom: true
-    }).setView([22.8, 79.2], 5);
-
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 18,
-        attribution: "&copy; OpenStreetMap contributors"
-    }).addTo(indiaMap);
-
+    indiaMap = L.map("indiaStateTrendsMap").setView([22.8, 79.2], 5);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "&copy; OpenStreetMap" }).addTo(indiaMap);
     const stateCoords = {
-        "Andhra Pradesh": [15.9129, 79.7400],
-        "Arunachal Pradesh": [28.2180, 94.7278],
-        "Assam": [26.2006, 92.9376],
-        "Bihar": [25.0961, 85.3131],
-        "Chhattisgarh": [21.2787, 81.8661],
-        "Goa": [15.2993, 74.1240],
-        "Gujarat": [22.2587, 71.1924],
-        "Haryana": [29.0588, 76.0856],
-        "Himachal Pradesh": [31.1048, 77.1734],
-        "Jharkhand": [23.6102, 85.2799],
-        "Karnataka": [15.3173, 75.7139],
-        "Kerala": [10.8505, 76.2711],
-        "Madhya Pradesh": [22.9734, 78.6569],
-        "Maharashtra": [19.7515, 75.7139],
-        "Manipur": [24.6637, 93.9063],
-        "Meghalaya": [25.4670, 91.3662],
-        "Mizoram": [23.1645, 92.9376],
-        "Nagaland": [26.1584, 94.5624],
-        "Odisha": [20.9517, 85.0985],
-        "Punjab": [31.1471, 75.3412],
-        "Rajasthan": [27.0238, 74.2179],
-        "Sikkim": [27.5330, 88.5122],
-        "Tamil Nadu": [11.1271, 78.6569],
-        "Telangana": [18.1124, 79.0193],
-        "Tripura": [23.9408, 91.9882],
-        "Uttar Pradesh": [26.8467, 80.9462],
-        "Uttarakhand": [30.0668, 79.0193],
-        "West Bengal": [22.9868, 87.8550],
-        "Andaman and Nicobar Islands": [11.7401, 92.6586],
-        "Chandigarh": [30.7333, 76.7794],
-        "Dadra and Nagar Haveli and Daman and Diu": [20.1809, 73.0169],
-        "Delhi": [28.7041, 77.1025],
-        "Jammu and Kashmir": [33.7782, 76.5762],
-        "Ladakh": [34.1526, 77.5770],
-        "Lakshadweep": [10.5667, 72.6417],
-        "Puducherry": [11.9416, 79.8083]
+        "Andhra Pradesh": [15.9129, 79.7400], "Arunachal Pradesh": [28.2180, 94.7278], "Assam": [26.2006, 92.9376], "Bihar": [25.0961, 85.3131], 
+        "Chhattisgarh": [21.2787, 81.8661], "Goa": [15.2993, 74.1240], "Gujarat": [22.2587, 71.1924], "Haryana": [29.0588, 76.0856], 
+        "Himachal Pradesh": [31.1048, 77.1734], "Jharkhand": [23.6102, 85.2799], "Karnataka": [15.3173, 75.7139], "Kerala": [10.8505, 76.2711], 
+        "Madhya Pradesh": [22.9734, 78.6569], "Maharashtra": [19.7515, 75.7139], "Manipur": [24.6637, 93.9063], "Meghalaya": [25.4670, 91.3662], 
+        "Mizoram": [23.1645, 92.9376], "Nagaland": [26.1584, 94.5624], "Odisha": [20.9517, 85.0985], "Punjab": [31.1471, 75.3412], 
+        "Rajasthan": [27.0238, 74.2179], "Sikkim": [27.5330, 88.5122], "Tamil Nadu": [11.1271, 78.6569], "Telangana": [18.1124, 79.0193], 
+        "Tripura": [23.9408, 91.9882], "Uttar Pradesh": [26.8467, 80.9462], "Uttarakhand": [30.0668, 79.0193], "West Bengal": [22.9868, 87.8550]
     };
-
-    Object.entries(stateCoords).forEach(([stateName, coords]) => {
-        const marker = L.circleMarker(coords, {
-            radius: 7,
-            color: "#065f46",
-            weight: 2,
-            fillColor: "#10b981",
-            fillOpacity: 0.85
-        }).addTo(indiaMap);
-
-        marker.bindTooltip(stateName, { direction: "top", sticky: true });
-        marker.on("click", () => handleStateMapClick(stateName, marker));
+    Object.entries(stateCoords).forEach(([name, coords]) => {
+        const marker = L.circleMarker(coords, { radius: 7, color: "#065f46", fillColor: "#10b981", fillOpacity: 0.85 }).addTo(indiaMap);
+        marker.bindTooltip(name, { direction: "top", sticky: true });
+        marker.on("click", () => handleStateMapClick(name, marker));
     });
 }
 
 async function handleStateMapClick(stateName, markerNode) {
-    if (selectedStateMarker) {
-        selectedStateMarker.setStyle({
-            radius: 7,
-            color: "#065f46",
-            fillColor: "#10b981",
-            fillOpacity: 0.85
-        });
-    }
+    if (selectedStateMarker) selectedStateMarker.setStyle({ radius: 7, color: "#065f46", fillColor: "#10b981", fillOpacity: 0.85 });
     selectedStateMarker = markerNode;
-    selectedStateMarker.setStyle({
-        radius: 10,
-        color: "#92400e",
-        fillColor: "#fbbf24",
-        fillOpacity: 0.95
-    });
-
-    const defaultMessage = document.getElementById("mapDefaultMessage");
+    selectedStateMarker.setStyle({ radius: 10, color: "#92400e", fillColor: "#fbbf24", fillOpacity: 0.95 });
+    const defaultMsg = document.getElementById("mapDefaultMessage");
     const loading = document.getElementById("mapLoading");
     const trendBox = document.getElementById("topTrendBox");
-    if (defaultMessage) defaultMessage.style.display = "none";
+    if (defaultMsg) defaultMsg.style.display = "none";
     if (loading) loading.style.display = "block";
-
     try {
         const res = await fetch(`${API_BASE}/live-trends?state=${encodeURIComponent(stateName)}`);
-        if (!res.ok) throw new Error(`Status ${res.status}`);
         const data = await res.json();
         renderIndiaTrendsUI(data);
-        markerNode.bindPopup(`<div class="state-marker-popup"><strong>${data.state}</strong><br/>Top Trend: ${data.top_trend}</div>`).openPopup();
-        if (trendBox) {
-            trendBox.style.display = "block";
-            trendBox.innerHTML = `Trending Crop: ${data.top_trend} <span style="opacity:0.8;">(${data.state})</span>`;
-        }
-    } catch (error) {
-        console.error(error);
-        if (trendBox) {
-            trendBox.style.display = "block";
-            trendBox.innerHTML = "Unable to load trends data for selected state.";
-        }
-    } finally {
-        if (loading) loading.style.display = "none";
-    }
+        markerNode.bindPopup(`<strong>${data.state}</strong><br/>Top Trend: ${data.top_trend}`).openPopup();
+        if (trendBox) { trendBox.style.display = "block"; trendBox.innerHTML = `Trending Crop: ${data.top_trend}`; }
+    } catch (error) { console.error(error); } 
+    finally { if (loading) loading.style.display = "none"; }
 }
 
 function renderIndiaTrendsUI(payload) {
     const chartCanvas = document.getElementById("indiaTrendsChart");
     if (!chartCanvas) return;
-    const labels = payload.crops.map((item) => item.name);
-    const prices = payload.crops.map((item) => item.price);
-
-    // Calculate Insights
-    let highest = payload.crops.reduce((max, item) => item.price > max.price ? item : max, payload.crops[0]);
-    let lowest = payload.crops.reduce((min, item) => item.price < min.price ? item : min, payload.crops[0]);
-
-    const insightsBox = document.getElementById("trendsInsightsBox");
-    if (insightsBox) {
-        insightsBox.style.display = "block";
-        insightsBox.innerHTML = `
-            <div style="font-weight: 800; font-size: 1.2rem; color: #f1f5f9; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
-                📊 Insights:
+    const labels = payload.crops.map(i => i.name);
+    const prices = payload.crops.map(i => i.price);
+    let high = payload.crops.reduce((max, i) => i.price > max.price ? i : max, payload.crops[0]);
+    let low = payload.crops.reduce((min, i) => i.price < min.price ? i : min, payload.crops[0]);
+    const insights = document.getElementById("trendsInsightsBox");
+    if (insights) {
+        insights.style.display = "block";
+        insights.innerHTML = `
+            <div style="font-weight:800; color:var(--primary); margin-bottom:0.5rem;"><i class="fas fa-chart-line"></i> Dominating Crop Analysis:</div>
+            <div style="display:flex; justify-content:space-between; opacity:0.9;">
+                <span>📈 Highest (Dominating): <strong>${high.name}</strong></span>
+                <span style="color:var(--primary);">₹${high.price}</span>
             </div>
-            <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.8rem; font-size: 1.05rem; color: rgba(203,213,225,0.95);">
-                <li><strong style="color: #22c55e;">• Highest Price:</strong> ${highest.name} (₹${highest.price})</li>
-                <li><strong style="color: #ef4444;">• Lowest Price:</strong> ${lowest.name} (₹${lowest.price})</li>
-                <li><strong style="color: #f59e0b;">• Market Trend:</strong> <span style="font-weight:700;">${payload.top_trend}</span> dominating</li>
-            </ul>
+            <div style="display:flex; justify-content:space-between; opacity:0.9; margin-top:0.3rem;">
+                <span>📉 Lowest: <strong>${low.name}</strong></span>
+                <span style="color:#ef4444;">₹${low.price}</span>
+            </div>
         `;
     }
-
-    lastLiveTrend = payload.top_trend;
-    lastLiveTrendState = payload.state;
+    lastLiveTrend = { dominating: high.name, highest_price: high.price, lowest_crop: low.name, state: payload.state };
     if (indiaTrendsChart) indiaTrendsChart.destroy();
     indiaTrendsChart = new Chart(chartCanvas.getContext("2d"), {
-        type: "bar",
-        data: {
-            labels,
-            datasets: [{
-                label: `${payload.state} Crop Prices`,
-                data: prices,
-                backgroundColor: ["#22c55e","#3b82f6","#f97316","#ef4444","#a855f7"],
-                borderRadius: 10
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { labels: { color: "#e2e8f0" } }
-            },
-            scales: {
-                x: { ticks: { color: "#cbd5e1" }, grid: { color: "rgba(255,255,255,0.08)" } },
-                y: { ticks: { color: "#cbd5e1" }, grid: { color: "rgba(255,255,255,0.08)" } }
-            }
-        }
+        type: "bar", data: { labels, datasets: [{ label: `${payload.state} Prices`, data: prices, backgroundColor: ["#22c55e","#3b82f6","#f97316","#ef4444","#a855f7"] }] },
+        options: { responsive: true, maintainAspectRatio: false }
     });
 }
 
-// --- Techniques Logic ---
-const precautionsData = {
-    organic: [
-        "Avoid synthetic chemical fertilizers strictly to maintain organic soil structures.",
-        "Implement rigid crop rotation to naturally combat pest cycles without pesticides.",
-        "Test soil routinely to ensure macro-nutrients aren't depleted."
-    ],
-    drip: [
-        "Flush the entire system mapped lines regularly to prevent emitter clogging.",
-        "Ensure robust water filtration to keep sand/silt out of the micro-tubes.",
-        "Check lines for rodent damage, as animals often chew exposed drip lines for water."
-    ],
-    mixed: [
-        "Create absolute isolation between livestock disease vectors and crop zones.",
-        "Rigorously balance the land ratio to prevent overgrazing by animals.",
-        "Organize separate secure storage for agro-chemicals vs. animal feeds."
-    ],
-    vertical: [
-        "Maintain redundant backup power supplies; HVAC/LED failure is catastrophic.",
-        "Enforce strict clean-room hygiene to prevent uncontrollable indoor mold spreads.",
-        "Calibrate automatic hydroponic dosing systems weakly to prevent nutrient burn."
-    ],
-    hydroponics: [
-        "Continuously and strictly monitor water pH and EC (Electrical Conductivity).",
-        "Over-oxygenate the water reservoir to securely prevent root rot diseases.",
-        "Keep ambient ambient water temperatures cool, as warm water holds no oxygen."
-    ],
-    precision: [
-        "Regularly calibrate soil and humidity sensors to prevent catastrophic false data.",
-        "Protect sensitive drone batteries and IoT radio modules from unpredicted heavy rain.",
-        "Maintain secure local/cloud data backups for field mapping history."
-    ]
-};
-
 function initTechniques() {
-    // Watch Video Buttons
-    document.querySelectorAll('.youtube-btn').forEach(btn => {
-        btn.onclick = (e) => {
-            const url = e.currentTarget.getAttribute('data-url');
-            if(url) window.open(url, '_blank');
-        };
-    });
-
-    // Precautions Buttons
-    document.querySelectorAll('.precaution-btn').forEach(btn => {
-        btn.onclick = (e) => {
-            const topic = e.currentTarget.getAttribute('data-topic');
-            showPrecautionModal(topic);
-        };
-    });
+    document.querySelectorAll('.youtube-btn').forEach(btn => btn.onclick = (e) => window.open(e.currentTarget.getAttribute('data-url'), '_blank'));
+    document.querySelectorAll('.precaution-btn').forEach(btn => btn.onclick = (e) => showPrecautionModal(e.currentTarget.getAttribute('data-topic')));
 }
 
 function showPrecautionModal(topic) {
-    const data = precautionsData[topic];
-    if (!data) return;
-    
-    let existing = document.getElementById('precautionModal');
-    if (existing) existing.remove();
-
-    const titleMap = {
-        organic: "Organic Farming", drip: "Drip Irrigation", mixed: "Mixed Farming",
-        vertical: "Vertical Farming", hydroponics: "Hydroponics", precision: "Precision Agriculture"
-    };
-
-    const iconMap = {
-        organic: "fa-leaf", drip: "fa-droplet", mixed: "fa-cow",
-        vertical: "fa-building", hydroponics: "fa-water", precision: "fa-satellite-dish"
-    };
-
-    const modal = document.createElement('div');
-    modal.id = 'precautionModal';
-    modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); z-index:10000; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(12px); opacity:0; transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);";
-    
-    let listHTML = data.map(item => `<li style="margin-bottom:1.2rem; display:flex; gap:1rem; align-items:flex-start;"><i class="fas fa-exclamation-triangle" style="color:#ef4444; margin-top:0.25rem;"></i><span style="font-weight:500; color:#e2e8f0;">${item}</span></li>`).join('');
-
-    modal.innerHTML = `
-        <div style="background: rgba(15,23,42,0.98); border-radius:28px; padding:2.5rem; max-width:550px; width:90%; box-shadow:0 25px 60px rgba(0,0,0,0.6); transform:scale(0.95); transition:transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position:relative; border:1px solid rgba(255,255,255,0.08);">
-            <button class="close-modal-btn" style="position:absolute; top:20px; right:20px; background:rgba(255,255,255,0.08); border:none; width:40px; height:40px; border-radius:50%; font-size:1.2rem; cursor:pointer; color:#f1f5f9; transition:0.2s;"><i class="fas fa-times"></i></button>
-            <h3 style="font-size:1.8rem; margin-top:0; color:#f1f5f9; margin-bottom:1.5rem; display:flex; align-items:center; gap:0.8rem;"><div style="background:rgba(239, 68, 68, 0.12); width:45px; height:45px; border-radius:12px; display:flex; align-items:center; justify-content:center;"><i class="fas ${iconMap[topic]}" style="color:#ef4444; font-size:1.4rem;"></i></div> ${titleMap[topic]} Precautions</h3>
-            <ul style="list-style:none; padding:0; margin:0; color:#cbd5e1; font-size:1.1rem; line-height:1.6;">
-                ${listHTML}
-            </ul>
-        </div>
-    `;
-
-    document.body.appendChild(modal);
-    
-    // Close button hover
-    const closeBtn = modal.querySelector('.close-modal-btn');
-    closeBtn.onmouseover = () => closeBtn.style.background = '#e2e8f0';
-    closeBtn.onmouseout = () => closeBtn.style.background = '#f1f5f9';
-    closeBtn.onclick = () => {
-        modal.style.opacity = '0';
-        modal.querySelector('div').style.transform = 'scale(0.95)';
-        setTimeout(()=>modal.remove(), 300);
-    };
-
-    setTimeout(() => {
-        modal.style.opacity = '1';
-        modal.querySelector('div').style.transform = 'scale(1)';
-    }, 10);
-    
-    modal.onclick = (e) => {
-        if(e.target === modal) {
-            modal.style.opacity = '0';
-            modal.querySelector('div').style.transform = 'scale(0.95)';
-            setTimeout(()=>modal.remove(), 300);
+    const data = {
+        'organic': {
+            title: 'Organic Farming Precautions',
+            content: '1. Seed Quality: Always use non-GMO and certified organic seeds. 2. Buffer Zones: Maintain a distance from neighbor farms using chemicals to avoid drift. 3. Documentation: Keep strict logs of manure sources and pest control methods for certification. 4. Natural Pests: Monitor fields daily; organic solutions work best if applied early.'
+        },
+        'drip': {
+            title: 'Drip Irrigation Precautions',
+            content: '1. Filtration: Use high-quality filters to prevent emitter clogging from sand or algae. 2. Pressure Check: Maintain uniform pressure across the field for equal water distribution. 3. Flushing: Flush your main and sub-main lines every 15 days to remove silt. 4. Root Zone: Ensure the drippers are close to the roots but not buried too deep.'
+        },
+        'mixed': {
+            title: 'Mixed Farming Precautions',
+            content: '1. Species Compatibility: Ensure used crops and livestock do not transmit diseases to each other. 2. Nutrient Management: Balance the manure output of animals with the intake capacity of the soil. 3. Space Allocation: Prevent animals from overgrazing or compacting the crop soil. 4. Labor Demand: Mixed farming is effort-intensive; ensure you have enough manpower for both units.'
+        },
+        'vertical': {
+            title: 'Vertical Farming Precautions',
+            content: '1. Lighting: Monitor LED spectrum and intensity regularly; excess heat can burn leaves. 2. Humidity: Air circulation is critical in vertical stacks to prevent fungal growth. 3. Structural Integrity: Ensure the racks can handle the weight of wet soil and fully grown plants. 4. System failure: Have a battery backup for the pumps to avoid crop loss during power cuts.'
+        },
+        'hydroponics': {
+            title: 'Hydroponics Precautions',
+            content: '1. pH & EC Levels: Check these twice daily. Small changes can kill the entire crop in hours. 2. Water Temp: Keep water between 18-22°C; warm water depletes oxygen and causes root rot. 3. Sanitation: Sterilize the system between cycles to kill stubborn pathogens. 4. Algae Control: Keep the reservoir and pipes opaque to prevent light from growing algae.'
+        },
+        'precision': {
+            title: 'Precision Agriculture Precautions',
+            content: '1. Sensor Calibration: Calibrate soil sensors every season for accurate data. 2. Data Connectivity: Ensure your field has stable network coverage for real-time IoT alerts. 3. Software Updates: Keep your management app updated to avoid security bugs. 4. Skill Building: Training is key; data is only useful if interpreted correctly by the farmer.'
         }
     };
+
+    const info = data[topic] || { title: 'Precautions', content: 'General farming safety: Wear protective gear and monitor crop health regularly.' };
+    
+    // Reuse the AI Modal structure for consistency and premium look
+    const modal = document.getElementById('aiAssistantModal');
+    if (!modal) {
+        showToastError("⚠️ Modal element not found! Please check HTML.");
+        return;
+    }
+
+    modal.querySelector('.ai-modal-title').innerText = info.title;
+    modal.querySelector('.ai-modal-body').innerHTML = `
+        <div style="font-size:1.1rem; line-height:1.7; color: rgba(226, 232, 240, 0.95);">
+            ${info.content.split('. ').map(item => `<div style="margin-bottom:0.8rem; border-left:3px solid var(--primary); padding-left:1rem;">${item}</div>`).join('')}
+        </div>
+    `;
+    modal.classList.add('open');
 }
 
-/** Scroll reveal — animations replay every time section enters viewport */
+function showToastError(msg) {
+    let t = document.createElement('div');
+    t.innerText = msg;
+    t.style.cssText = "position:fixed; top:30px; right:30px; background:#ef4444; color:white; padding:15px 25px; border-radius:12px; z-index:9999; opacity:0; transition:0.4s;";
+    document.body.appendChild(t);
+    setTimeout(() => { t.style.opacity = '0'; setTimeout(()=>t.remove(), 400); }, 3500);
+}
+
+
+/** Scroll reveal logic */
 function initScrollReveal() {
     const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
-
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Element enters view → trigger animation
-                entry.target.classList.add('active');
-            } else {
-                // Element leaves view → reset so it can replay next time
-                entry.target.classList.remove('active');
-            }
+            if (entry.isIntersecting) { entry.target.classList.add('active'); } 
+            else { entry.target.classList.remove('active'); }
         });
-    }, {
-        threshold: 0.12,
-        rootMargin: '0px 0px -40px 0px'
-    });
-
+    }, { threshold: 0.1 });
     reveals.forEach(el => observer.observe(el));
 }
 
-
-// Call init at bottom
 initScrollReveal();
