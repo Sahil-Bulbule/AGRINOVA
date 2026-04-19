@@ -62,8 +62,8 @@ def create_app():
         return jsonify(data)
 
     @app.route("/")
-def home():
-    return "Backend LIVE hai 🚀"
+    def home():
+        return "Backend LIVE hai 🚀"
 
     @app.post("/feedback")
     def save_feedback():
