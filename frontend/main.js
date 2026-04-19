@@ -1,5 +1,5 @@
 // Agrinova - Main Logic (Full-Stack Version)
-const API_BASE = "http://localhost:5000";
+const API_BASE = "https://agrinova-smart-agriculture-web-platform-3d16.onrender.com";
 
 // --- Global State ---
 let marketChart = null;
