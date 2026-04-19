@@ -1,14 +1,10 @@
-<<<<<<< HEAD
-// Agrinova - Main Logic (Full-Stack Version)
-const API_BASE = "https://agrinova-smart-agriculture-web-platform-3d16.onrender.com";
-=======
 // 🔗 Backend API Configuration
-const RENDER_URL = "https://agrinova-smart-agriculture-web-platform-3d16.onrender.com"; // Corrected Render URL
+const RENDER_URL = "https://agrinova-smart-agriculture-web-platform-3d16.onrender.com"; 
 const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname === "") 
     ? "http://localhost:5000" 
     : RENDER_URL;
 
->>>>>>> fae3579 (fixed bugs / updated code)
+console.log("🚀 AgriNova API Base Connected:", API_BASE);
 
 // --- Global State ---
 let marketChart = null;
