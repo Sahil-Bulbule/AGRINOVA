@@ -1,0 +1,938 @@
+[
+  {
+    "state": "Andhra Pradesh",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 7161
+      },
+      {
+        "name": "Rice",
+        "price": 2356
+      },
+      {
+        "name": "Onion",
+        "price": 5710
+      },
+      {
+        "name": "Tomato",
+        "price": 6458
+      },
+      {
+        "name": "Sugarcane",
+        "price": 6451
+      }
+    ],
+    "top_trend": "Rice"
+  },
+  {
+    "state": "Arunachal Pradesh",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 2966
+      },
+      {
+        "name": "Rice",
+        "price": 4857
+      },
+      {
+        "name": "Onion",
+        "price": 1824
+      },
+      {
+        "name": "Tomato",
+        "price": 3399
+      },
+      {
+        "name": "Sugarcane",
+        "price": 7266
+      }
+    ],
+    "top_trend": "Tomato"
+  },
+  {
+    "state": "Assam",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 1144
+      },
+      {
+        "name": "Rice",
+        "price": 2677
+      },
+      {
+        "name": "Onion",
+        "price": 7091
+      },
+      {
+        "name": "Tomato",
+        "price": 2021
+      },
+      {
+        "name": "Sugarcane",
+        "price": 1742
+      }
+    ],
+    "top_trend": "Rice"
+  },
+  {
+    "state": "Bihar",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 3889
+      },
+      {
+        "name": "Rice",
+        "price": 7253
+      },
+      {
+        "name": "Onion",
+        "price": 2761
+      },
+      {
+        "name": "Tomato",
+        "price": 4011
+      },
+      {
+        "name": "Sugarcane",
+        "price": 3867
+      }
+    ],
+    "top_trend": "Wheat"
+  },
+  {
+    "state": "Chhattisgarh",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 2814
+      },
+      {
+        "name": "Rice",
+        "price": 4561
+      },
+      {
+        "name": "Onion",
+        "price": 2837
+      },
+      {
+        "name": "Tomato",
+        "price": 3787
+      },
+      {
+        "name": "Sugarcane",
+        "price": 5805
+      }
+    ],
+    "top_trend": "Rice"
+  },
+  {
+    "state": "Goa",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 5969
+      },
+      {
+        "name": "Rice",
+        "price": 7820
+      },
+      {
+        "name": "Onion",
+        "price": 2329
+      },
+      {
+        "name": "Tomato",
+        "price": 2516
+      },
+      {
+        "name": "Sugarcane",
+        "price": 4521
+      }
+    ],
+    "top_trend": "Onion"
+  },
+  {
+    "state": "Gujarat",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 6571
+      },
+      {
+        "name": "Rice",
+        "price": 3577
+      },
+      {
+        "name": "Onion",
+        "price": 6189
+      },
+      {
+        "name": "Tomato",
+        "price": 4698
+      },
+      {
+        "name": "Sugarcane",
+        "price": 2957
+      }
+    ],
+    "top_trend": "Sugarcane"
+  },
+  {
+    "state": "Haryana",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 4027
+      },
+      {
+        "name": "Rice",
+        "price": 5675
+      },
+      {
+        "name": "Onion",
+        "price": 7039
+      },
+      {
+        "name": "Tomato",
+        "price": 5314
+      },
+      {
+        "name": "Sugarcane",
+        "price": 6111
+      }
+    ],
+    "top_trend": "Wheat"
+  },
+  {
+    "state": "Himachal Pradesh",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 2616
+      },
+      {
+        "name": "Rice",
+        "price": 2250
+      },
+      {
+        "name": "Onion",
+        "price": 1318
+      },
+      {
+        "name": "Tomato",
+        "price": 4252
+      },
+      {
+        "name": "Sugarcane",
+        "price": 4810
+      }
+    ],
+    "top_trend": "Tomato"
+  },
+  {
+    "state": "Jharkhand",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 7642
+      },
+      {
+        "name": "Rice",
+        "price": 1840
+      },
+      {
+        "name": "Onion",
+        "price": 6844
+      },
+      {
+        "name": "Tomato",
+        "price": 4646
+      },
+      {
+        "name": "Sugarcane",
+        "price": 3981
+      }
+    ],
+    "top_trend": "Rice"
+  },
+  {
+    "state": "Karnataka",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 5793
+      },
+      {
+        "name": "Rice",
+        "price": 5712
+      },
+      {
+        "name": "Onion",
+        "price": 1223
+      },
+      {
+        "name": "Tomato",
+        "price": 2882
+      },
+      {
+        "name": "Sugarcane",
+        "price": 7663
+      }
+    ],
+    "top_trend": "Onion"
+  },
+  {
+    "state": "Kerala",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 3255
+      },
+      {
+        "name": "Rice",
+        "price": 2867
+      },
+      {
+        "name": "Onion",
+        "price": 4837
+      },
+      {
+        "name": "Tomato",
+        "price": 6810
+      },
+      {
+        "name": "Sugarcane",
+        "price": 3779
+      }
+    ],
+    "top_trend": "Rice"
+  },
+  {
+    "state": "Madhya Pradesh",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 6206
+      },
+      {
+        "name": "Rice",
+        "price": 6820
+      },
+      {
+        "name": "Onion",
+        "price": 2201
+      },
+      {
+        "name": "Tomato",
+        "price": 5116
+      },
+      {
+        "name": "Sugarcane",
+        "price": 7989
+      }
+    ],
+    "top_trend": "Wheat"
+  },
+  {
+    "state": "Maharashtra",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 7459
+      },
+      {
+        "name": "Rice",
+        "price": 6257
+      },
+      {
+        "name": "Onion",
+        "price": 1041
+      },
+      {
+        "name": "Tomato",
+        "price": 4904
+      },
+      {
+        "name": "Sugarcane",
+        "price": 6388
+      }
+    ],
+    "top_trend": "Onion"
+  },
+  {
+    "state": "Manipur",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 7085
+      },
+      {
+        "name": "Rice",
+        "price": 5485
+      },
+      {
+        "name": "Onion",
+        "price": 1898
+      },
+      {
+        "name": "Tomato",
+        "price": 1409
+      },
+      {
+        "name": "Sugarcane",
+        "price": 7274
+      }
+    ],
+    "top_trend": "Tomato"
+  },
+  {
+    "state": "Meghalaya",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 5397
+      },
+      {
+        "name": "Rice",
+        "price": 5788
+      },
+      {
+        "name": "Onion",
+        "price": 7263
+      },
+      {
+        "name": "Tomato",
+        "price": 3137
+      },
+      {
+        "name": "Sugarcane",
+        "price": 1746
+      }
+    ],
+    "top_trend": "Rice"
+  },
+  {
+    "state": "Mizoram",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 2887
+      },
+      {
+        "name": "Rice",
+        "price": 2200
+      },
+      {
+        "name": "Onion",
+        "price": 6183
+      },
+      {
+        "name": "Tomato",
+        "price": 5372
+      },
+      {
+        "name": "Sugarcane",
+        "price": 5460
+      }
+    ],
+    "top_trend": "Tomato"
+  },
+  {
+    "state": "Nagaland",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 4330
+      },
+      {
+        "name": "Rice",
+        "price": 5932
+      },
+      {
+        "name": "Onion",
+        "price": 4686
+      },
+      {
+        "name": "Tomato",
+        "price": 4871
+      },
+      {
+        "name": "Sugarcane",
+        "price": 5148
+      }
+    ],
+    "top_trend": "Rice"
+  },
+  {
+    "state": "Odisha",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 2543
+      },
+      {
+        "name": "Rice",
+        "price": 6739
+      },
+      {
+        "name": "Onion",
+        "price": 6584
+      },
+      {
+        "name": "Tomato",
+        "price": 2750
+      },
+      {
+        "name": "Sugarcane",
+        "price": 7004
+      }
+    ],
+    "top_trend": "Rice"
+  },
+  {
+    "state": "Punjab",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 3896
+      },
+      {
+        "name": "Rice",
+        "price": 7099
+      },
+      {
+        "name": "Onion",
+        "price": 3900
+      },
+      {
+        "name": "Tomato",
+        "price": 2171
+      },
+      {
+        "name": "Sugarcane",
+        "price": 7180
+      }
+    ],
+    "top_trend": "Wheat"
+  },
+  {
+    "state": "Rajasthan",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 5618
+      },
+      {
+        "name": "Rice",
+        "price": 4343
+      },
+      {
+        "name": "Onion",
+        "price": 7906
+      },
+      {
+        "name": "Tomato",
+        "price": 6019
+      },
+      {
+        "name": "Sugarcane",
+        "price": 6515
+      }
+    ],
+    "top_trend": "Onion"
+  },
+  {
+    "state": "Sikkim",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 1865
+      },
+      {
+        "name": "Rice",
+        "price": 5939
+      },
+      {
+        "name": "Onion",
+        "price": 2646
+      },
+      {
+        "name": "Tomato",
+        "price": 7674
+      },
+      {
+        "name": "Sugarcane",
+        "price": 2681
+      }
+    ],
+    "top_trend": "Tomato"
+  },
+  {
+    "state": "Tamil Nadu",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 6647
+      },
+      {
+        "name": "Rice",
+        "price": 5392
+      },
+      {
+        "name": "Onion",
+        "price": 4495
+      },
+      {
+        "name": "Tomato",
+        "price": 2337
+      },
+      {
+        "name": "Sugarcane",
+        "price": 3146
+      }
+    ],
+    "top_trend": "Rice"
+  },
+  {
+    "state": "Telangana",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 7591
+      },
+      {
+        "name": "Rice",
+        "price": 1155
+      },
+      {
+        "name": "Onion",
+        "price": 4376
+      },
+      {
+        "name": "Tomato",
+        "price": 2246
+      },
+      {
+        "name": "Sugarcane",
+        "price": 5723
+      }
+    ],
+    "top_trend": "Sugarcane"
+  },
+  {
+    "state": "Tripura",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 6092
+      },
+      {
+        "name": "Rice",
+        "price": 4013
+      },
+      {
+        "name": "Onion",
+        "price": 6434
+      },
+      {
+        "name": "Tomato",
+        "price": 6885
+      },
+      {
+        "name": "Sugarcane",
+        "price": 6652
+      }
+    ],
+    "top_trend": "Rice"
+  },
+  {
+    "state": "Uttar Pradesh",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 2064
+      },
+      {
+        "name": "Rice",
+        "price": 5376
+      },
+      {
+        "name": "Onion",
+        "price": 1246
+      },
+      {
+        "name": "Tomato",
+        "price": 4009
+      },
+      {
+        "name": "Sugarcane",
+        "price": 7028
+      }
+    ],
+    "top_trend": "Sugarcane"
+  },
+  {
+    "state": "Uttarakhand",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 1805
+      },
+      {
+        "name": "Rice",
+        "price": 2713
+      },
+      {
+        "name": "Onion",
+        "price": 1045
+      },
+      {
+        "name": "Tomato",
+        "price": 2885
+      },
+      {
+        "name": "Sugarcane",
+        "price": 6296
+      }
+    ],
+    "top_trend": "Tomato"
+  },
+  {
+    "state": "West Bengal",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 5688
+      },
+      {
+        "name": "Rice",
+        "price": 4367
+      },
+      {
+        "name": "Onion",
+        "price": 5464
+      },
+      {
+        "name": "Tomato",
+        "price": 2479
+      },
+      {
+        "name": "Sugarcane",
+        "price": 6455
+      }
+    ],
+    "top_trend": "Rice"
+  },
+  {
+    "state": "Andaman and Nicobar Islands",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 7903
+      },
+      {
+        "name": "Rice",
+        "price": 2407
+      },
+      {
+        "name": "Onion",
+        "price": 2335
+      },
+      {
+        "name": "Tomato",
+        "price": 6460
+      },
+      {
+        "name": "Sugarcane",
+        "price": 7977
+      }
+    ],
+    "top_trend": "Tomato"
+  },
+  {
+    "state": "Chandigarh",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 1800
+      },
+      {
+        "name": "Rice",
+        "price": 5648
+      },
+      {
+        "name": "Onion",
+        "price": 7322
+      },
+      {
+        "name": "Tomato",
+        "price": 1079
+      },
+      {
+        "name": "Sugarcane",
+        "price": 7676
+      }
+    ],
+    "top_trend": "Wheat"
+  },
+  {
+    "state": "Dadra and Nagar Haveli and Daman and Diu",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 1519
+      },
+      {
+        "name": "Rice",
+        "price": 5666
+      },
+      {
+        "name": "Onion",
+        "price": 5263
+      },
+      {
+        "name": "Tomato",
+        "price": 3139
+      },
+      {
+        "name": "Sugarcane",
+        "price": 2903
+      }
+    ],
+    "top_trend": "Onion"
+  },
+  {
+    "state": "Delhi",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 2247
+      },
+      {
+        "name": "Rice",
+        "price": 5204
+      },
+      {
+        "name": "Onion",
+        "price": 6990
+      },
+      {
+        "name": "Tomato",
+        "price": 1186
+      },
+      {
+        "name": "Sugarcane",
+        "price": 2232
+      }
+    ],
+    "top_trend": "Tomato"
+  },
+  {
+    "state": "Jammu and Kashmir",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 6662
+      },
+      {
+        "name": "Rice",
+        "price": 2390
+      },
+      {
+        "name": "Onion",
+        "price": 1408
+      },
+      {
+        "name": "Tomato",
+        "price": 5723
+      },
+      {
+        "name": "Sugarcane",
+        "price": 6431
+      }
+    ],
+    "top_trend": "Wheat"
+  },
+  {
+    "state": "Ladakh",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 1578
+      },
+      {
+        "name": "Rice",
+        "price": 2880
+      },
+      {
+        "name": "Onion",
+        "price": 1976
+      },
+      {
+        "name": "Tomato",
+        "price": 2128
+      },
+      {
+        "name": "Sugarcane",
+        "price": 1025
+      }
+    ],
+    "top_trend": "Tomato"
+  },
+  {
+    "state": "Lakshadweep",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 2872
+      },
+      {
+        "name": "Rice",
+        "price": 5694
+      },
+      {
+        "name": "Onion",
+        "price": 6547
+      },
+      {
+        "name": "Tomato",
+        "price": 7243
+      },
+      {
+        "name": "Sugarcane",
+        "price": 2104
+      }
+    ],
+    "top_trend": "Onion"
+  },
+  {
+    "state": "Puducherry",
+    "crops": [
+      {
+        "name": "Wheat",
+        "price": 7569
+      },
+      {
+        "name": "Rice",
+        "price": 6398
+      },
+      {
+        "name": "Onion",
+        "price": 1108
+      },
+      {
+        "name": "Tomato",
+        "price": 4990
+      },
+      {
+        "name": "Sugarcane",
+        "price": 2359
+      }
+    ],
+    "top_trend": "Rice"
+  }
+]

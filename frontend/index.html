@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriNova - Advanced Smart Farming Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+</head>
+
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <!-- Top Glass Header -->
+    <header class="top-header">
+        <div class="sidebar-toggle" id="sidebarToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="header-logo">AGRI<span>NOVA</span></div>
+    </header>
+
+    <!-- Sidebar Navbar -->
+    <nav id="sidebar" class="sidebar">
+        <div class="nav-links">
+            <a href="#home"><i class="fas fa-home"></i> Home</a>
+            <a href="#agrinova"><i class="fas fa-info-circle"></i> About</a>
+            <a href="#drone-mapping"><i class="fas fa-microchip"></i> AI Drones</a>
+            <a href="#weather"><i class="fas fa-cloud-sun"></i> Weather</a>
+            <a href="#market"><i class="fas fa-shop"></i> Market</a>
+            <a href="#india-map-trends"><i class="fas fa-map-marked-alt"></i> Trends</a>
+            <a href="#trends"><i class="fas fa-seedling"></i> Crop Yield</a>
+            <a href="#schemes"><i class="fas fa-file-invoice"></i> Schemes</a>
+            <a href="#techniques"><i class="fas fa-tools"></i> Techniques</a>
+            <a href="#smartfarming"><i class="fas fa-mortar-pestle"></i> Advisory</a>
+            <a href="#feedback"><i class="fas fa-comment-alt"></i> Feedback</a>
+        </div>
+    </nav>
+
+    <!-- hero section -->
+    <section class="hero reveal" id="home">
+        <div class="hero-slider reveal-right">
+            <div class="slides-track">
+                <div class="slide"
+                    style="background-image: url('https://plus.unsplash.com/premium_photo-1661901755900-4783bbf014e5?q=100&w=3840&auto=format&fit=crop');">
+                </div>
+                <div class="slide"
+                    style="background-image: url('https://images.unsplash.com/photo-1627920769541-daa658ed6b59?q=100&w=3840&auto=format&fit=crop');">
+                </div>
+                <div class="slide"
+                    style="background-image: url('https://images.unsplash.com/photo-1535379453347-1ffd615e2e08?q=100&w=3840&auto=format&fit=crop');">
+                </div>
+                <div class="slide"
+                    style="background-image: url('https://images.unsplash.com/photo-1563514227147-6d2ff665a6a0?q=100&w=3840&auto=format&fit=crop');">
+                </div>
+                <div class="slide"
+                    style="background-image: url('https://images.unsplash.com/photo-1495107334309-fcf20504a5ab?q=100&w=3840&auto=format&fit=crop');">
+                </div>
+            </div>
+        </div>
+        <div class="hero-content reveal-left">
+            <h1 class="hero-brand">AGRINOVA</h1>
+            <h2 class="animated-text" style="font-size: 50px;">Empowering Every Harvest <br><span
+                    class="gradient-text">With Smart Data</span>
+            </h2>
+            <div style="display:flex; gap:1.5rem; justify-content:center;">
+                <a href="#weather" class="hero-btn">Get Forecast</a>
+                <a href="#trends" class="hero-btn"
+                    style="background:rgba(255,255,255,0.2); backdrop-filter:blur(5px); box-shadow:none;">View
+                    Trends</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- stats section  -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-card"><i class="fas fa-users"></i><span>50,000+</span>
+                <p>Farmers Using Portal</p>
+            </div>
+            <div class="stat-card"><i class="fas fa-map-marked-alt"></i><span>1.2M</span>
+                <p>Acres Optimized</p>
+            </div>
+            <div class="stat-card"><i class="fas fa-cloud-sun"></i><span>98%</span>
+                <p>Forecast Accuracy</p>
+            </div>
+            <div class="stat-card"><i class="fas fa-award"></i><span>15+</span>
+                <p>Partnerships</p>
+            </div>
+        </div>
+    </section>
+    <div class="section-separator"></div>
+
+    <!-- about section -->
+    <section id="advisory" class="advisory reveal">
+        <div class="section-header reveal">
+            <h2 class="section-title">About AgriNova</h2>
+            <p class="section-subtitle">The next generation of intelligent agricultural management.</p>
+        </div>
+        <div
+            style="max-width: 1000px; margin: 0 auto 5rem; text-align: center; line-height: 1.8; color: var(--text-light); font-size: 1.15rem;">
+            AgriNova is not just a portal. it's a digital revolution in the palm of your hand. We believe that the
+            future of farming lies at the intersection of traditional wisdom and exponential technology. Our mission is
+            to bridge that gap, providing every farmer—from smallholders to large estates—with the tools they need to
+            thrive in a changing climate and a complex global market.
+        </div>
+        <div class="grid-3">
+            <div class="card" style="border-top: 5px solid var(--primary-light);">
+                <div class="card-body">
+                    <div style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 1.5rem;"><i
+                            class="fas fa-microchip"></i></div>
+                    <h3>AI-Powered Core</h3>
+                    <p>Our sophisticated algorithms process millions of data points every second to provide you with
+                        precise, hyper-local harvest predictions and pest alerts.</p>
+                </div>
+            </div>
+            <div class="card" style="border-top: 5px solid var(--secondary);">
+                <div class="card-body">
+                    <div style="font-size: 2.5rem; color: var(--secondary); margin-bottom: 1.5rem;"><i
+                            class="fas fa-globe-asia"></i></div>
+                    <h3>Global Ecosystem</h3>
+                    <p>AgriNova connects you to a global network of agricultural scientists, storage facilities, and
+                        international export markets, expanding your horizons.</p>
+                </div>
+            </div>
+            <div class="card" style="border-top: 5px solid #6366f1;">
+                <div class="card-body">
+                    <div style="font-size: 2.5rem; color: #6366f1; margin-bottom: 1.5rem;"><i
+                            class="fas fa-hand-holding-heart"></i></div>
+                    <h3>Human-Centric Design</h3>
+                    <p>We build for farmers first. Our interface is designed to be intuitive, multilingual, and
+                        accessible, ensuring that technology serves you, not the other way around.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="section-separator"></div>
+
+    <!-- mission section -->
+    <section id="about" class="reveal">
+        <div class="section-header reveal">
+            <h2 class="section-title">Our Mission</h2>
+            <p class="section-subtitle">Bridging the gap between traditional wisdom and modern technology.</p>
+        </div>
+        <div class="grid-3">
+            <div class="card">
+                <div class="card-img"><img
+                        src="https://08cf2042.delivery.rocketcdn.me/wp-content/uploads/2023/08/What-is-Digital-Transformation-and-Innovation.jpg"
+                        alt="Digital Innovation"></div>
+                <div class="card-body">
+                    <h3>Digital Innovation</h3>
+                    <p>Providing accurate data to boost crop yields by over 40% through AI-driven patterns and real-time
+                        monitoring.</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img"><img
+                        src="https://cdn.prod.website-files.com/66615bb4beb4b554c9cd33c3/689ae2c2f5336029bc305851_SM%20image%20bg%206.webp"
+                        alt="Smart Advisory"></div>
+                <div class="card-body">
+                    <h3>Smart Advisory</h3>
+                    <p>24/7 access to agricultural experts and automated pest detection using proprietary drone imagery
+                        analysis.</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img"><img
+                        src="https://www.europeanbusinessreview.com/wp-content/uploads/2024/10/iStock-2075877369-1.jpg"
+                        alt="Sustainability"></div>
+                <div class="card-body">
+                    <h3>Sustainability</h3>
+                    <p>Promoting organic growth and water conservation through smart scheduling and soil health
+                        management.</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img"><img src="https://ardeaf.org/wp-content/uploads/2021/04/agriculture-bank.jpg"
+                        alt="Knowledge Bank"></div>
+                <div class="card-body">
+                    <h3>Knowledge Bank</h3>
+                    <p>Access 10,000+ localized research papers and harvesting guides for every major Indian crop type.
+                    </p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img"><img
+                        src="https://www.smefinanceforum.org/sites/default/files/shutterstock_1635308305-NL.jpg"
+                        alt="Community Forums"></div>
+                <div class="card-body">
+                    <h3>Community Forums</h3>
+                    <p>Connect with successful farmers across the country to share peer-to-peer lessons and local market
+                        tips.</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img"><img
+                        src="https://eng.ruralvoice.in/uploads/images/2024/06/image_750x_66648f789c066.jpg"
+                        alt="Export Assistance"></div>
+                <div class="card-body">
+                    <h3>Export Assistance</h3>
+                    <p>Helping small-scale farmers reach global markets with basic quality checks and logistics support.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="section-separator"></div>
+
+    <!-- drone banner -->
+    <div class="drone-banner reveal" id="drone-mapping">
+        <div>
+            <h2 style="font-size:3rem; margin-bottom:1.5rem;">AI Drone Mapping</h2>
+            <p style="font-size:1.2rem; margin-bottom:2rem; opacity:0.9;">AI-powered drones scan agricultural fields
+                using advanced sensors to analyze crop health, soil moisture, and pest activity. This helps farmers make
+                faster and more accurate decisions.</p>
+            <ul style="list-style:none; margin-bottom:2.5rem;">
+                <li style="margin-bottom:1rem; font-size:1.2rem; font-weight:600;">✅ High accuracy field analysis</li>
+                <li style="margin-bottom:1rem; font-size:1.2rem; font-weight:600;">✅ Early pest & disease detection</li>
+                <li style="font-size:1.2rem; font-weight:600;">✅ Real-time data collection</li>
+            </ul>
+            <a href="https://youtu.be/7UXsr74gAXI?si=3iPIyTcpvc70YeVL" target="_blank" class="hero-btn"
+                style="background:var(--secondary); color:#1a1a2e; padding: 1.2rem 3rem; font-size: 1.1rem;">Explore
+                Now</a>
+        </div>
+        <div class="drone-img-container"
+            style="border-radius:40px; overflow:hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.4);">
+            <img src="https://images.pexels.com/photos/1034812/pexels-photo-1034812.jpeg" class="drone-img"
+                style="width:100%; display:block;" alt="Drone Mapping Activity">
+        </div>
+    </div>
+    <div class="section-separator"></div>
+
+    <!-- forecast section -->
+    <section id="weather" class="weather reveal">
+        <div class="section-header reveal">
+            <h2 class="section-title">Live Forecast</h2>
+            <p class="section-subtitle">Hyper-local weather insights tailored for your specific farm location.</p>
+        </div>
+        <div class="weather-container"
+            style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; overflow: hidden; min-height: 450px; position: relative; border: 1px solid rgba(255,255,255,0.1);">
+            <div class="weather-search"
+                style="border-bottom: 1px solid rgba(255,255,255,0.12); padding-bottom: 2rem; position: relative; z-index: 10;">
+                <input type="text" id="cityInput" placeholder="Enter City (e.g. Mumbai)" value="Lucknow"
+                    style="background: rgba(255,255,255,0.12); color: white; border-color: rgba(255,255,255,0.2); width: 320px;">
+                <button id="getWeatherBtn" class="weather-btn" style="background: var(--primary-light);">Check Live
+                    Status</button>
+            </div>
+
+            <div id="weatherDashboard" style="margin-top: 3rem; position: relative;">
+            </div>
+            <div class="ai-assistant-row">
+                <div class="ai-assistant-card">
+                    <div class="ai-assistant-card__label">Quick farm advice</div>
+                    <button class="ai-help-btn" data-ai-type="weather">What should farmer do? 🌾</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="section-separator"></div>
+
+    <!-- market section -->
+    <section id="market" class="market reveal">
+        <div class="section-header reveal">
+            <h2 class="section-title">Live Trends Prices</h2>
+            <p class="section-subtitle">Real-time daily rates from 1000+ local markets across India.</p>
+        </div>
+        <div class="weather-container" style="background: var(--card-bg); border-radius:30px; padding: 3rem;">
+
+            <!-- State Selector Row -->
+            <div class="trends-selector-row">
+                <div class="trends-selector-group">
+                    <label for="trendsStateSelect" class="trends-selector-label">
+                        <i class="fas fa-map-marker-alt"></i> Select State
+                    </label>
+                    <div class="trends-select-wrap">
+                        <select id="trendsStateSelect" class="trends-state-select">
+                            <option value="">— Choose a state —</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Punjab" selected>Punjab</option>
+                            <option value="Madhya Pradesh">Madhya Pradesh</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                            <option value="Haryana">Haryana</option>
+                            <option value="Other">Other (Enter Manually)</option>
+                        </select>
+                        <i class="fas fa-chevron-down trends-select-arrow"></i>
+                    </div>
+                </div>
+
+                <!-- "Other" text input — hidden by default -->
+                <div class="trends-other-wrap" id="trendsOtherWrap">
+                    <label for="trendsOtherInput" class="trends-selector-label">
+                        <i class="fas fa-edit"></i> Enter State Name
+                    </label>
+                    <input type="text" id="trendsOtherInput" class="trends-other-input"
+                        placeholder="e.g. Rajasthan, Gujarat…" autocomplete="off">
+                </div>
+
+                <button id="trendsSearchBtn" class="trends-search-btn">
+                    <i class="fas fa-search"></i> Fetch Prices
+                </button>
+            </div>
+
+            <!-- Inline validation error -->
+            <div id="trendsError" class="trends-error-msg" style="display:none;"></div>
+
+            <div id="trendsResult" class="trends-grid"></div>
+        </div>
+    </section>
+    <div class="section-separator"></div>
+
+    <section id="india-map-trends" class="reveal">
+        <div class="section-header reveal">
+            <h2 class="section-title">India Map Trends Explorer</h2>
+            <p class="section-subtitle">Click any state or union territory to view live trends crop prices and top trend.
+            </p>
+        </div>
+        <div class="weather-container map-trends-container">
+            <div class="map-wrap">
+                <div id="indiaStateTrendsMap" role="img" aria-label="Interactive India trends map"></div>
+            </div>
+            <div class="map-data-panel">
+                <div id="mapDefaultMessage" class="map-default-message">Click on any state to view trends data.</div>
+                <div id="mapLoading" class="map-loading" style="display:none;">Loading trends data...</div>
+                <div id="topTrendBox" class="top-trend-box" style="display:none;"></div>
+                <div class="chart-shell">
+                    <canvas id="indiaTrendsChart"></canvas>
+                </div>
+                <div class="ai-assistant-row">
+                    <div class="ai-assistant-card">
+                        <div class="ai-assistant-card__label">Market price insight</div>
+                        <button class="ai-help-btn" data-ai-type="price">Why price changing? 📈</button>
+                    </div>
+                </div>
+                <div id="trendsInsightsBox"
+                    style="display:none; margin-top:2rem; background: rgba(255,255,255,0.06); border:1px solid rgba(74,222,128,0.18); border-radius:18px; padding:1.5rem; box-shadow:0 10px 25px rgba(0,0,0,0.25); color: #f1f5f9;">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="section-separator"></div>
+
+    <section id="crop-recommendation" class="reveal"
+        style="background: var(--bg); position:relative; overflow:hidden; padding: 6rem 5%;">
+        <!-- background glow -->
+        <div
+            style="position:absolute; top:-20%; left:-10%; width: 600px; height: 600px; background: rgba(16,185,129,0.15); filter: blur(100px); border-radius:50%;">
+        </div>
+        <div
+            style="position:absolute; bottom:-20%; right:-10%; width: 600px; height: 600px; background: rgba(59,130,246,0.1); filter: blur(100px); border-radius:50%;">
+        </div>
+
+        <div class="section-header" style="position:relative; z-index:2; margin-bottom:4rem;">
+            <h2 class="section-title">AI Crop Recommendation</h2>
+            <p class="section-subtitle">Data-driven agricultural insights for absolute maximum seasonal yield.</p>
+        </div>
+
+        <div
+            style="position:relative; z-index:2; max-width: 1050px; margin: 0 auto; background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(74,222,128,0.18); border-radius: 40px; padding: 3.5rem; box-shadow: 0 40px 80px rgba(0,0,0,0.45);">
+
+            <form id="recommendationForm"
+                style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; align-items: end;">
+                <!-- 1. Temperature -->
+                <div class="input-group">
+                    <label for="advisoryTemp"
+                        style="font-weight:800; color: #f1f5f9; display:block; margin-bottom:0.8rem; font-size:1.05rem;">Temperature
+                        (°C)</label>
+                    <input id="advisoryTemp" type="number" step="0.1" placeholder="e.g. 28.5" required
+                        style="width:100%; padding: 1.1rem 1.4rem; border-radius: 16px; border: 2px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.08); font-weight: 600; color: #f1f5f9; font-size: 1.1rem; transition: 0.3s; outline: none; font-family: inherit; box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);">
+                </div>
+
+                <!-- 2. Soil Type -->
+                <div class="input-group">
+                    <label for="soilType"
+                        style="font-weight:800; color: #f1f5f9; display:block; margin-bottom:0.8rem; font-size:1.05rem;">Soil
+                        Type</label>
+                    <select id="soilType" required
+                        style="width:100%; padding: 1.1rem 1.4rem; border-radius: 16px; border: 2px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.08); font-weight: 600; color: #f1f5f9; font-size: 1.1rem; transition: 0.3s; outline: none; font-family: inherit; cursor:pointer; box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);">
+                        <option value="" disabled selected>Select Soil...</option>
+                        <option value="Loamy">Loamy</option>
+                        <option value="Clay">Clay</option>
+                        <option value="Sandy">Sandy</option>
+                        <option value="Alluvial">Alluvial</option>
+                        <option value="Black">Black/Regur</option>
+                    </select>
+                </div>
+
+                <!-- 3. Month / Season -->
+                <div class="input-group">
+                    <label for="advisoryMonth"
+                        style="font-weight:800; color: #f1f5f9; display:block; margin-bottom:0.8rem; font-size:1.05rem;">Month
+                        /
+                        Season</label>
+                    <select id="advisoryMonth" required
+                        style="width:100%; padding: 1.1rem 1.4rem; border-radius: 16px; border: 2px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.08); font-weight: 600; color: #f1f5f9; font-size: 1.1rem; transition: 0.3s; outline: none; font-family: inherit; cursor:pointer; box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);">
+                        <option value="" disabled selected>Select Month...</option>
+                        <option value="Jan">January</option>
+                        <option value="Feb">February</option>
+                        <option value="Mar">March</option>
+                        <option value="Apr">April</option>
+                        <option value="May">May</option>
+                        <option value="Jun">June</option>
+                        <option value="Jul">July</option>
+                        <option value="Aug">August</option>
+                        <option value="Sep">September</option>
+                        <option value="Oct">October</option>
+                        <option value="Nov">November</option>
+                        <option value="Dec">December</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="hero-btn"
+                    style="border: none; padding: 1.25rem 2rem; grid-column: 1 / -1; margin-top: 1.5rem; border-radius: 16px; font-weight:800; font-size: 1.3rem; justify-content:center; display:flex; gap:0.8rem; align-items:center; background: linear-gradient(135deg, #065f46 0%, #10b981 100%);"><i
+                        class="fas fa-microchip"></i> Generate Live Recommendation</button>
+            </form>
+
+            <div id="recommendationResult"
+                style="margin-top: 2rem; display:none; flex-direction:column; gap:0.8rem; padding: 2rem; background: rgba(255,255,255,0.06); border: 1px solid rgba(74,222,128,0.18); border-radius: 20px; color: #f1f5f9; font-size: 1.15rem; box-shadow: 0 15px 30px rgba(0,0,0,0.25);">
+            </div>
+            <div class="ai-assistant-row">
+                <div class="ai-assistant-card">
+                    <div class="ai-assistant-card__label">Crop recommendation helper</div>
+                    <button class="ai-help-btn" data-ai-type="crop">Why this crop ? ✅ </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="section-separator"></div>
+
+    <!-- schemes section -->
+    <section id="schemes">
+        <div class="section-header">
+            <h2 class="section-title">Government Schemes</h2>
+            <p class="section-subtitle">Official support programs and financial aid for top 5 states.</p>
+        </div>
+        <div class="weather-container"
+            style="background: linear-gradient(135deg, rgba(15,23,42,0.98) 0%, rgba(30,41,59,0.98) 100%); color: white; border-radius:30px; padding: 3rem; overflow: hidden; position: relative; border: 1px solid rgba(74,222,128,0.2); box-shadow:0 25px 50px rgba(0,0,0,0.4);">
+            <div class="tabs-nav"
+                style="margin-bottom: 3rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 2rem; justify-content: center;">
+                <button class="btn-tab-scheme active" data-scheme="mh">Maharashtra</button>
+                <button class="btn-tab-scheme" data-scheme="up">U.P.</button>
+                <button class="btn-tab-scheme" data-scheme="pb">Punjab</button>
+                <button class="btn-tab-scheme" data-scheme="gj">Gujarat</button>
+                <button class="btn-tab-scheme" data-scheme="central">Central</button>
+            </div>
+            <div id="schemesGrid" class="grid-3"></div>
+        </div>
+    </section>
+    <div class="section-separator"></div>
+
+    <!-- modern techniques -->
+    <section id="techniques">
+        <div class="section-header">
+            <h2 class="section-title">Modern Techniques</h2>
+            <p class="section-subtitle">Science-backed methods for sustainable and high-yield agriculture.</p>
+        </div>
+        <div class="grid-3" id="techniquesGrid">
+            <div class="card">
+                <div class="card-img"><img
+                        src="https://www.agrivi.com/wp-content/uploads/2016/01/Blog-Organic-Farming-1200x565.png">
+                </div>
+                <div class="card-body">
+                    <h3>Organic Farming</h3>
+                    <p>Natural methods without chemicals for long-term sustainability.</p>
+                    <div style="display:flex; gap:1rem; margin-top:auto;">
+                        <button class="hero-btn youtube-btn" style="flex:1; padding:1rem;"
+                            data-url="https://youtu.be/WhOrIUlrnPo?si=-_5eIsakXnZVA8Uy">Watch Video</button>
+                        <button class="hero-btn precaution-btn"
+                            style="flex:1; padding:1rem; background:var(--secondary); color:#1a1a2e;"
+                            data-topic="organic">Precautions</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img"><img src="https://baif.org.in/wp-content/uploads/2024/06/6.jpg">
+                </div>
+                <div class="card-body">
+                    <h3>Drip Irrigation</h3>
+                    <p>Roots focus watering, ideal for water-scarce regions.</p>
+                    <div style="display:flex; gap:1rem; margin-top:auto;">
+                        <button class="hero-btn youtube-btn" style="flex:1; padding:1rem;"
+                            data-url="https://youtu.be/2dXUxMqxL0w?si=yBM3x8i-q0N_W26E">Watch Video</button>
+                        <button class="hero-btn precaution-btn"
+                            style="flex:1; padding:1rem; background:var(--secondary); color:#1a1a2e;"
+                            data-topic="drip">Precautions</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img"><img
+                        src="https://img.etimg.com/thumb/width-1600,height-900,imgsize-364502,resizemode-75,msid-120888109/small-biz/sustainability/need-incentives-for-farmers-to-adopt-non-chemical-fertiliser-based-farming-agri-secretary.jpg">
+                </div>
+                <div class="card-body">
+                    <h3>Mixed Farming</h3>
+                    <p>Crops + Livestock for diversified income and natural fertility.</p>
+                    <div style="display:flex; gap:1rem; margin-top:auto;">
+                        <button class="hero-btn youtube-btn" style="flex:1; padding:1rem;"
+                            data-url="https://youtu.be/yt1ngMXNhEc?si=uKrTqxS92Tz9R6Ba">Watch Video</button>
+                        <button class="hero-btn precaution-btn"
+                            style="flex:1; padding:1rem; background:var(--secondary); color:#1a1a2e;"
+                            data-topic="mixed">Precautions</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img"><img
+                        src="https://fruittoday.com/wp-content/uploads/2025/06/Top_10_Vertical_Farming_Companies_Revolutionizing_Urban_Agriculture-Image-12-e1750158065133.jpg">
+                </div>
+                <div class="card-body">
+                    <h3>Vertical Farming</h3>
+                    <p>Stacking crops to maximize yield in urban environments.</p>
+                    <div style="display:flex; gap:1rem; margin-top:auto;">
+                        <button class="hero-btn youtube-btn" style="flex:1; padding:1rem;"
+                            data-url="https://youtu.be/hCQHwimJFGM?si=RMX3-RZDk3JEqcJx">Watch Video</button>
+                        <button class="hero-btn precaution-btn"
+                            style="flex:1; padding:1rem; background:var(--secondary); color:#1a1a2e;"
+                            data-topic="vertical">Precautions</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img"><img
+                        src="https://www.marlohydroponics.com/wp-content/uploads/2020/07/hydroponics_why_a_good_idea.jpg">
+                </div>
+                <div class="card-body">
+                    <h3>Hydroponics</h3>
+                    <p>Soilless farming using mineral nutrient solutions in water.</p>
+                    <div style="display:flex; gap:1rem; margin-top:auto;">
+                        <button class="hero-btn youtube-btn" style="flex:1; padding:1rem;"
+                            data-url="https://youtu.be/wBcnUUkdavE?si=J5a8qr5_lKwcTQC0">Watch Video</button>
+                        <button class="hero-btn precaution-btn"
+                            style="flex:1; padding:1rem; background:var(--secondary); color:#1a1a2e;"
+                            data-topic="hydroponics">Precautions</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img"><img
+                        src="https://agfundernews.com/wp-content/uploads/2019/05/iStock-898449496-e1595484927319.jpg">
+                </div>
+                <div class="card-body">
+                    <h3>Precision Agriculture</h3>
+                    <p>Using IoT and sensors for exact crop need management.</p>
+                    <div style="display:flex; gap:1rem; margin-top:auto;">
+                        <button class="hero-btn youtube-btn" style="flex:1; padding:1rem;"
+                            data-url="https://youtu.be/WhAfZhFxHTs?si=sM4HWVubl_ai99GM">Watch Video</button>
+                        <button class="hero-btn precaution-btn"
+                            style="flex:1; padding:1rem; background:var(--secondary); color:#1a1a2e;"
+                            data-topic="precision">Precautions</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="section-separator"></div>
+
+    <!-- advisory section -->
+    <section id="smartfarming">
+        <div class="section-header">
+            <h2 class="section-title">Advisory Portal</h2>
+            <p class="section-subtitle">Premium smart guides for high-yield farming.</p>
+        </div>
+
+        <div class="tabs-nav">
+            <button class="btn-tab active" data-tab="tab1">Planning</button>
+            <button class="btn-tab" data-tab="tab2">Irrigation</button>
+            <button class="btn-tab" data-tab="tab3">Pest Control</button>
+            <button class="btn-tab" data-tab="tab4">Soil Health</button>
+            <button class="btn-tab" data-tab="tab5">Harvesting</button>
+            <button class="btn-tab" data-tab="tab6">Storage</button>
+            <button class="btn-tab" data-tab="tab7">Certification</button>
+            <button class="btn-tab" data-tab="tab8">Finance</button>
+            <button class="btn-tab" data-tab="tab9">Machinery</button>
+            <button class="btn-tab" data-tab="tab10">Cattle</button>
+        </div>
+        <div id="tab1" class="tab-content-panel active">
+            <div>
+                <h3 style="font-size:1.8rem; color:var(--primary); margin-bottom:1.5rem;">Optimized Crop Cycle &
+                    Planning</h3>
+                <div class="advisory-point">
+                    <i class="fas fa-calendar-check"></i>
+                    <div>
+                        <strong>Seasonal Planning</strong>
+                        <p>Leverage historical weather patterns and soil data to align your planting schedules perfectly
+                            with the seasons.</p>
+                    </div>
+                </div>
+                <div class="advisory-point">
+                    <i class="fas fa-seedling"></i>
+                    <div>
+                        <strong>Crop Rotation</strong>
+                        <p>Rotate crops strategically to naturally break destructive pest cycles and prevent massive
+                            soil depletion.</p>
+                    </div>
+                </div>
+                <div class="advisory-point">
+                    <i class="fas fa-chart-line"></i>
+                    <div>
+                        <strong>Yield Maximization</strong>
+                        <p>Strategic early planning and scheduling fertilizer applications is the true foundation of
+                            high-profit farming.</p>
+                    </div>
+                </div>
+                <button class="hero-btn youtube-btn" style="margin-top:0.5rem;"
+                    data-url="https://youtu.be/Wk6qAIsexmg?si=Z1fSvb-pyxXqzmd_">Watch Guide</button>
+            </div>
+            <div class="advisory-img-container"><img
+                    src="https://imgcdn.stablediffusionweb.com/2024/9/16/09ab64f1-bc73-48d6-a2be-c733363827a9.jpg"
+                    style="width:100%; height:100%; object-fit:cover;"></div>
+        </div>
+        <div id="tab2" class="tab-content-panel">
+            <div>
+                <h3 style="font-size:1.8rem; color:var(--primary); margin-bottom:1.5rem;">Smart Irrigation & Water
+                    Management</h3>
+                <div class="advisory-point">
+                    <i class="fas fa-tint"></i>
+                    <div>
+                        <strong>Precision Moisture</strong>
+                        <p>Optimize your water usage with deep ground moisture monitoring and automated drip irrigation
+                            systems.</p>
+                    </div>
+                </div>
+                <div class="advisory-point">
+                    <i class="fas fa-shield-virus"></i>
+                    <div>
+                        <strong>Disease Prevention</strong>
+                        <p>Efficient irrigation conserves water and actively prevents crop root diseases caused by
+                            waterlogging.</p>
+                    </div>
+                </div>
+                <div class="advisory-point">
+                    <i class="fas fa-water"></i>
+                    <div><strong>Drip Systems</strong>
+                        <p>Maximizing water efficiency by delivering moisture directly to roots.</p>
+                    </div>
+                </div>
+                <div class="advisory-point">
+                    <i class="fas fa-tools"></i>
+                    <div><strong>System Maintenance</strong>
+                        <p>Preventing clogging and leakages in automated irrigation networks.</p>
+                    </div>
+                </div>
+                <button class="hero-btn youtube-btn" style="margin-top:0.5rem;"
+                    data-url="https://youtu.be/zIesCWeTptc?si=CpdI_HdR0f8MTZrA">Watch Guide</button>
+            </div>
+            <div class="advisory-img-container"><img
+                    src="https://turftech.jjsea.com/wp-content/uploads/2024/06/smart-irrigation-systems.jpg"
+                    style="width:100%; height:100%; object-fit:cover;"></div>
+        </div>
+
+        <div id="tab3" class="tab-content-panel">
+            <div>
+                <h3 style="font-size:1.8rem; color:var(--primary); margin-bottom:1.5rem;">Advanced Pest Control</h3>
+                <div class="advisory-point">
+                    <i class="fas fa-bug"></i>
+                    <div><strong>IPM Strategy</strong>
+                        <p>Integrated Pest Management using biological and cultural controls.</p>
+                    </div>
+                </div>
+                <div class="advisory-point">
+                    <i class="fas fa-shield-virus"></i>
+                    <div><strong>Disease Detection</strong>
+                        <p>Early identification of fungal and bacterial crop infections.</p>
+                    </div>
+                </div>
+                <div class="advisory-point">
+                    <i class="fas fa-vial"></i>
+                    <div><strong>Targeted Sprays</strong>
+                        <p>Precision application of pesticides to minimize chemical waste.</p>
+                    </div>
+                </div>
+                <button class="hero-btn youtube-btn" style="margin-top:0.5rem;"
+                    data-url="https://youtu.be/-c6OuXMSWeE?si=PO2zadK1GaMmENkf">Watch Guide</button>
+            </div>
+            <div class="advisory-img-container"><img
+                    src="https://www.frontiersin.org/_rtmag/_next/image?url=https%3A%2F%2Fwww.frontiersin.org%2Fimage%2Fresearchtopic%2F40864&w=3840&q=90"
+                    style="width:100%; height:100%; object-fit:cover;"></div>
+        </div>
+
+        <div id="tab4" class="tab-content-panel">
+            <div>
+                <h3 style="font-size:1.8rem; color:var(--primary); margin-bottom:1.5rem;">Soil Health & Nutrition</h3>
+                <div class="advisory-point">
+                    <i class="fas fa-flask"></i>
+                    <div><strong>Nutrient Management</strong>
+                        <p>Balancing NPK ratios based on regular soil health card reports.</p>
+                    </div>
+                </div>
+                <div class="advisory-point">
+                    <i class="fas fa-recycle"></i>
+                    <div><strong>Composting</strong>
+                        <p>Improving soil organic carbon through vermicompost and manure.</p>
+                    </div>
+                </div>
+                <div class="advisory-point">
+                    <i class="fas fa-layer-group"></i>
+                    <div><strong>Crop Rotation</strong>
+                        <p>Restoring nitrogen levels naturally through legume intercropping.</p>
+                    </div>
+                </div>
+                <button class="hero-btn youtube-btn" style="margin-top:0.5rem;"
+                    data-url="https://youtu.be/o48CYz5FMO0?si=ZyIYsALLrAdzC7Lk">Watch Guide</button>
+            </div>
+            <div class="advisory-img-container"><img
+                    src="https://growers.ag/wp-content/uploads/2021/03/SoilNutrients.png"
+                    style="width:100%; height:100%; object-fit:cover;"></div>
+        </div>
+
+        <div id="tab5" class="tab-content-panel">
+            <div>
+                <h3 style="font-size:1.8rem; color:var(--primary); margin-bottom:1.5rem;">Harvesting Excellence</h3>
+                <div class="advisory-point">
+                    <i class="fas fa-clock"></i>
+                    <div><strong>Maturity Markers</strong>
+                        <p>Judging the exact harvest window for peak grain weight and quality.</p>
+                    </div>
+                </div>
+                <div class="advisory-point">
+                    <i class="fas fa-cut"></i>
+                    <div><strong>Harvesting Methods</strong>
+                        <p>Reducing field losses using the right mechanical or manual tools.</p>
+                    </div>
+                </div>
+                <div class="advisory-point">
+                    <i class="fas fa-sun"></i>
+                    <div><strong>Pre-Storage Drying</strong>
+                        <p>Lowering moisture content to safe levels before bagging crops.</p>
+                    </div>
+                </div>
+                <button class="hero-btn youtube-btn" style="margin-top:0.5rem;"
+                    data-url="https://youtu.be/HQZwbsaPmrs?si=1XcObUyBrv3hfM3t">Watch Guide</button>
+            </div>
+            <div class="advisory-img-container"><img
+                    src="https://www.bkt-tires.com/wp-content/uploads/2026/01/13349_n__MG_1819-scaled.jpg"
+                    style="width:100%; height:100%; object-fit:cover;"></div>
+        </div>
+
+        <div id="tab6" class="tab-content-panel">
+            <div>
+                <h3 style="font-size:1.8rem; color:var(--primary); margin-bottom:1.5rem;">Storage & Logistics</h3>
+                <div class="advisory-point">
+                    <i class="fas fa-warehouse"></i>
+                    <div><strong>Silo Management</strong>
+                        <p>Scientific storage to prevent grain spoilage and pest attacks.</p>
+                    </div>
+                </div>
+                <div class="advisory-point">
+                    <i class="fas fa-thermometer-half"></i>
+                    <div><strong>Temperature Control</strong>
+                        <p>Maintaining cold chains for perishable produce like fruits.</p>
+                    </div>
+                </div>
+                <div class="advisory-point">
+                    <i class="fas fa-chart-line"></i>
+                    <div><strong>Inventory Tracking</strong>
+                        <p>Managing stored stocks to capitalize on market seasonal pricing peaks.</p>
+                    </div>
+                </div>
+                <button class="hero-btn youtube-btn" style="margin-top:0.5rem;"
+                    data-url="https://youtu.be/IJwT-ncK2Dc?si=Ap-gEuicbEukX7dJ">Watch Guide</button>
+            </div>
+            <div class="advisory-img-container"><img
+                    src="https://sprightagro.com/wp-content/uploads/2024/05/cold-storage-1-1.jpg"
+                    style="width:100%; height:100%; object-fit:cover;"></div>
+        </div>
+
+        <div id="tab7" class="tab-content-panel">
+            <div>
+                <h3 style="font-size:1.8rem; color:var(--primary); margin-bottom:1.5rem;">Certification & Markets</h3>
+                <div class="advisory-point">
+                    <i class="fas fa-certificate"></i>
+                    <div><strong>Certification Process</strong>
+                        <p>Step-by-step guidance to get organic certification for export.</p>
+                    </div>
+                </div>
+                <div class="advisory-point">
+                    <i class="fas fa-file-invoice"></i>
+                    <div><strong>Compliance Logs</strong>
+                        <p>Maintaining strict records required for international audits.</p>
+                    </div>
+                </div>
+                <div class="advisory-point">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    <div><strong>Niche Markets</strong>
+                        <p>Targeting zero-budget natural farming markets for higher margins.</p>
+                    </div>
+                </div>
+                <button class="hero-btn youtube-btn" style="margin-top:0.5rem;"
+                    data-url="https://youtu.be/JEIibMjLLbg?si=F2pkOM9uEVaf-1RO">Watch Guide</button>
+            </div>
+            <div class="advisory-img-container"><img
+                    src="https://agmatrix.in/wp-content/uploads/2025/04/Agri-Inputs-Training-Program-Flow-visual-selection-final-e1743599488433-2048x1977.png"
+                    style="width:100%; height:100%; object-fit:cover;"></div>
+        </div>
+
+        <div id="tab8" class="tab-content-panel">
+            <div>
+                <h3 style="font-size:1.8rem; color:var(--primary); margin-bottom:1.5rem;">Farming Finance</h3>
+                <div class="advisory-point">
+                    <i class="fas fa-university"></i>
+                    <div><strong>Loan Applications</strong>
+                        <p>How to apply for KCC and agricultural loans with low interest.</p>
+                    </div>
+                </div>
+                <div class="advisory-point">
+                    <i class="fas fa-file-medical-alt"></i>
+                    <div><strong>Crop Insurance</strong>
+                        <p>Safeguarding investments against rainfall deficit or pests.</p>
+                    </div>
+                </div>
+                <div class="advisory-point">
+                    <i class="fas fa-coins"></i>
+                    <div><strong>Subsidy Tracking</strong>
+                        <p>Direct benefit transfer tracking and government grants guide.</p>
+                    </div>
+                </div>
+                <button class="hero-btn youtube-btn" style="margin-top:0.5rem;"
+                    data-url="https://youtu.be/G8QBOXPdhcw?si=TWYuX_nvtlSRxyIn">Watch Guide</button>
+            </div>
+            <div class="advisory-img-container"><img
+                    src="https://agrierp.com/blog/wp-content/uploads/2023/06/5-Ways-Farmers-Financial-Solutions-Can-Help-You-Grow-Your-Farm-copy-scaled.jpg"
+                    style="width:100%; height:100%; object-fit:cover;"></div>
+        </div>
+
+        <div id="tab9" class="tab-content-panel">
+            <div>
+                <h3 style="font-size:1.8rem; color:var(--primary); margin-bottom:1.5rem;">Modern Machinery</h3>
+                <div class="advisory-point">
+                    <i class="fas fa-tractor"></i>
+                    <div><strong>Machinery Selection</strong>
+                        <p>Choosing the right tractor HP and attachments for your land size.</p>
+                    </div>
+                </div>
+                <div class="advisory-point">
+                    <i class="fas fa-wrench"></i>
+                    <div><strong>Preventive Service</strong>
+                        <p>Regular maintenance schedules to prevent downtime during peak season.</p>
+                    </div>
+                </div>
+                <div class="advisory-point">
+                    <i class="fas fa-network-wired"></i>
+                    <div><strong>Hiring Centres</strong>
+                        <p>Accessing shared machinery resources (CHCs) for cost saving.</p>
+                    </div>
+                </div>
+                <button class="hero-btn youtube-btn" style="margin-top:0.5rem;"
+                    data-url="https://youtu.be/KYE0tvEz1Z0?si=dx_SQEznGX7v-3Yp">Watch Guide</button>
+            </div>
+            <div class="advisory-img-container"><img
+                    src="https://images.stockcake.com/public/2/9/0/2905f8df-9867-4d4a-8dfc-1750fd9c032f_large/modern-farming-technology-stockcake.jpg"
+                    style="width:100%; height:100%; object-fit:cover;"></div>
+        </div>
+
+        <div id="tab10" class="tab-content-panel">
+            <div>
+                <h3 style="font-size:1.8rem; color:var(--primary); margin-bottom:1.5rem;">Cattle & Livestock</h3>
+                <div class="advisory-point">
+                    <i class="fa-solid fa-cow"></i>
+                    <div><strong>Dairy Management</strong>
+                        <p>Proper feed and health monitoring for high milk production.</p>
+                    </div>
+                </div>
+                <div class="advisory-point">
+                    <i class="fa-solid fa-house-chimney"></i>
+                    <div><strong>Shelter Hygiene</strong>
+                        <p>Designing ventilated and clean housing to prevent infections.</p>
+                    </div>
+                </div>
+                <div class="advisory-point">
+                    <i class="fa-solid fa-syringe"></i>
+                    <div><strong>Vaccination</strong>
+                        <p>Tracking vital vaccine schedules for cattle, poultry, and goats.</p>
+                    </div>
+                </div>
+                <button class="hero-btn youtube-btn" style="margin-top:0.5rem;"
+                    data-url="https://youtu.be/Sg_386EijIM?si=GzQCWAuEqQgUN0el">Watch Guide</button>
+            </div>
+            <div class="advisory-img-container"><img
+                    src="https://www.nxp.com/assets/images/en/banners/Smart-farming-720x405.jpg"
+                    style="width:100%; height:100%; object-fit:cover;"></div>
+        </div>
+    </section>
+    <div class="section-separator"></div>
+
+
+    <!-- // feedback section -->
+    <section id="feedback" class="reveal"
+        style="background: linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.95) 100%);">
+        <div class="section-header">
+            <h2 class="section-title">Share Your Feedback</h2>
+            <p class="section-subtitle">Your insights help us grow better tools for you.</p>
+        </div>
+        <div class="weather-container"
+            style="max-width: 800px; padding: 3rem; background: rgba(255,255,255,0.04); box-shadow: 0 30px 60px rgba(0,0,0,0.35); border:1px solid rgba(74,222,128,0.12);">
+            <form id="feedbackForm" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <label style="font-weight: 700; color: var(--primary);">Full Name</label>
+                        <input type="text" id="name" placeholder="John Doe"
+                            style="width: 100%; border-radius: 12px; border: 2px solid rgba(255,255,255,0.18); padding: 1rem; outline: none; transition: 0.3s; background: rgba(255,255,255,0.08); color: #f1f5f9;"
+                            required>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <label style="font-weight: 700; color: var(--primary);">Email Address</label>
+                        <input type="email" id="email" placeholder="john@example.com"
+                            style="width: 100%; border-radius: 12px; border: 2px solid rgba(255,255,255,0.18); padding: 1rem; outline: none; transition: 0.3s; background: rgba(255,255,255,0.08); color: #f1f5f9;"
+                            required>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label style="font-weight: 700; color: var(--primary);">Your Experience</label>
+                    <div style="display: flex; gap: 1rem; font-size: 1.5rem; color: #fbbf24;">
+                        <i class="far fa-star rating-star" data-rating="1" style="cursor: pointer;"></i>
+                        <i class="far fa-star rating-star" data-rating="2" style="cursor: pointer;"></i>
+                        <i class="far fa-star rating-star" data-rating="3" style="cursor: pointer;"></i>
+                        <i class="far fa-star rating-star" data-rating="4" style="cursor: pointer;"></i>
+                        <i class="far fa-star rating-star" data-rating="5" style="cursor: pointer;"></i>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label style="font-weight: 700; color: var(--primary);">Message</label>
+                    <textarea rows="5" id="message" placeholder="How can we improve?"
+                        style="width: 100%; border-radius: 12px; border: 2px solid rgba(255,255,255,0.18); padding: 1rem; outline: none; transition: 0.3s; resize: none; background: rgba(255,255,255,0.08); color: #f1f5f9;"
+                        required></textarea>
+                </div>
+                <button type="submit" class="hero-btn"
+                    style="width: 100%; padding: 1.2rem; border: none; font-size: 1.1rem; cursor: pointer;">Send
+                    Feedback</button>
+            </form>
+        </div>
+    </section>
+
+    <div class="section-separator"></div>
+
+    <!-- // modern footer section -->
+    <footer class="modern-footer">
+        <div class="footer-content reveal">
+            <div class="thank-you-wrapper">
+                <h2 class="thank-you-text">Thank You For Choosing AgriNova</h2>
+                <div class="footer-status-bar">
+                    <span><i class="fas fa-check-circle"></i> Sustainable</span>
+                    <span><i class="fas fa-check-circle"></i> Digital</span>
+                    <span><i class="fas fa-check-circle"></i> Empowered</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="footer-divider-glow"></div>
+            <p>© 2026 AGRINOVA. Bridging Technology , Tradition & Innovations.</p>
+        </div>
+    </footer>
+
+    <!-- precautions modal -->
+    <div id="precautionModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="modalTitle">Precautions</h3>
+            <ul id="modalList" class="precaution-list">
+            </ul>
+            <button id="closeModalBtn" class="hero-btn" style="width:100%; margin-top:2rem;">Got It</button>
+        </div>
+    </div>
+
+    <!-- AI assistant modal -->
+    <div id="aiAssistantModal" class="ai-modal-overlay">
+        <div class="ai-modal-panel">
+            <button id="aiModalCloseBtn" class="ai-modal-close" aria-label="Close AI help">×</button>
+            <h3 class="ai-modal-title">Smart assistant</h3>
+            <p class="ai-modal-body">Loading advice...</p>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+
+</html>

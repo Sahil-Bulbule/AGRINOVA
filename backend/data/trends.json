@@ -1,0 +1,31 @@
+[
+    {"name": "Wheat", "price": 2470, "state": "Punjab", "up": true, "change": 45, "icon": "https://img.icons8.com/color/96/wheat.png"},
+    {"name": "Rice", "price": 3450, "state": "Punjab", "up": false, "change": 20, "icon": "https://img.icons8.com/color/96/rice-bowl.png"},
+    {"name": "Onion", "price": 1800, "state": "Punjab", "up": true, "change": 110, "icon": "https://img.icons8.com/color/96/onion.png"},
+    {"name": "Tomato", "price": 2200, "state": "Punjab", "up": false, "change": 50, "icon": "https://img.icons8.com/color/96/tomato.png"},
+    {"name": "Sugarcane", "price": 391, "state": "Punjab", "up": true, "change": 5, "icon": "https://img.icons8.com/color/96/sugarcane.png"},
+    
+    {"name": "Wheat", "price": 2350, "state": "Haryana", "up": false, "change": 30, "icon": "https://img.icons8.com/color/96/wheat.png"},
+    {"name": "Rice", "price": 3300, "state": "Haryana", "up": true, "change": 40, "icon": "https://img.icons8.com/color/96/rice-bowl.png"},
+    {"name": "Onion", "price": 1950, "state": "Haryana", "up": true, "change": 80, "icon": "https://img.icons8.com/color/96/onion.png"},
+    {"name": "Tomato", "price": 2450, "state": "Haryana", "up": true, "change": 100, "icon": "https://img.icons8.com/color/96/tomato.png"},
+    {"name": "Sugarcane", "price": 380, "state": "Haryana", "up": false, "change": 10, "icon": "https://img.icons8.com/color/96/sugarcane.png"},
+
+    {"name": "Wheat", "price": 2500, "state": "Maharashtra", "up": true, "change": 60, "icon": "https://img.icons8.com/color/96/wheat.png"},
+    {"name": "Rice", "price": 3550, "state": "Maharashtra", "up": true, "change": 70, "icon": "https://img.icons8.com/color/96/rice-bowl.png"},
+    {"name": "Onion", "price": 1600, "state": "Maharashtra", "up": false, "change": 120, "icon": "https://img.icons8.com/color/96/onion.png"},
+    {"name": "Tomato", "price": 2100, "state": "Maharashtra", "up": true, "change": 50, "icon": "https://img.icons8.com/color/96/tomato.png"},
+    {"name": "Sugarcane", "price": 365, "state": "Maharashtra", "up": true, "change": 8, "icon": "https://img.icons8.com/color/96/sugarcane.png"},
+
+    {"name": "Wheat", "price": 2200, "state": "Uttar Pradesh", "up": false, "change": 25, "icon": "https://img.icons8.com/color/96/wheat.png"},
+    {"name": "Rice", "price": 3100, "state": "Uttar Pradesh", "up": false, "change": 50, "icon": "https://img.icons8.com/color/96/rice-bowl.png"},
+    {"name": "Onion", "price": 2200, "state": "Uttar Pradesh", "up": true, "change": 90, "icon": "https://img.icons8.com/color/96/onion.png"},
+    {"name": "Tomato", "price": 2600, "state": "Uttar Pradesh", "up": false, "change": 150, "icon": "https://img.icons8.com/color/96/tomato.png"},
+    {"name": "Sugarcane", "price": 395, "state": "Uttar Pradesh", "up": true, "change": 15, "icon": "https://img.icons8.com/color/96/sugarcane.png"},
+
+    {"name": "Wheat", "price": 2400, "state": "Madhya Pradesh", "up": true, "change": 40, "icon": "https://img.icons8.com/color/96/wheat.png"},
+    {"name": "Rice", "price": 3250, "state": "Madhya Pradesh", "up": true, "change": 80, "icon": "https://img.icons8.com/color/96/rice-bowl.png"},
+    {"name": "Onion", "price": 1750, "state": "Madhya Pradesh", "up": false, "change": 60, "icon": "https://img.icons8.com/color/96/onion.png"},
+    {"name": "Tomato", "price": 2300, "state": "Madhya Pradesh", "up": true, "change": 110, "icon": "https://img.icons8.com/color/96/tomato.png"},
+    {"name": "Sugarcane", "price": 375, "state": "Madhya Pradesh", "up": true, "change": 12, "icon": "https://img.icons8.com/color/96/sugarcane.png"}
+]

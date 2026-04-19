@@ -1,0 +1,192 @@
+{
+    "central": [
+        {
+            "id": 1,
+            "name": "PM-Kisan Samman Nidhi",
+            "desc": "Income support of ₹6,000 per year in three installments to all landholding farmer families.",
+            "link": "https://pmkisan.gov.in/"
+        },
+        {
+            "id": 2,
+            "name": "Pradhan Mantri Fasal Bima Yojana",
+            "desc": "Crop insurance scheme providing financial support for loss or damage due to natural calamities.",
+            "link": "https://pmfby.gov.in/"
+        },
+        {
+            "id": 3,
+            "name": "Soil Health Card Scheme",
+            "desc": "Issuance of soil health cards with nutrient recommendations for improved crop productivity.",
+            "link": "https://soilhealth.dac.gov.in/"
+        },
+        {
+            "id": 4,
+            "name": "Kisan Credit Card (KCC)",
+            "desc": "Timely and affordable credit for farmers to meet cultivation and allied needs.",
+            "link": "https://www.pmkisan.gov.in/"
+        },
+        {
+            "id": 5,
+            "name": "PM Krishi Sinchayee Yojana",
+            "desc": "Focused on expanding irrigation coverage and improving water use efficiency across farms.",
+            "link": "https://pmksy.gov.in/"
+        },
+        {
+            "id": 6,
+            "name": "National Mission on Sustainable Agriculture",
+            "desc": "Supporting climate-resilient farming and sustainable agricultural practices.",
+            "link": "https://nmsa.dac.gov.in/"
+        }
+    ],
+    "mh": [
+        {
+            "id": 1,
+            "name": "Mahalanobat Utpadan Yojana",
+            "desc": "Subsidy support for micro-irrigation systems and efficient water use in Maharashtra.",
+            "link": "https://mahaagri.gov.in/"
+        },
+        {
+            "id": 2,
+            "name": "Maharashtra Fasal Bima Yojana",
+            "desc": "State insurance program to protect farmers from crop loss in monsoon and drought years.",
+            "link": "https://mahaagri.gov.in/"
+        },
+        {
+            "id": 3,
+            "name": "Mukhya Mantri Kisan Sanman Yojana",
+            "desc": "Annual direct benefit transfer to eligible farmers for improved income security.",
+            "link": "https://mahaagri.gov.in/"
+        },
+        {
+            "id": 4,
+            "name": "Pradhan Mantri Awas Yojana - Gramin",
+            "desc": "Housing support for rural farming families with subsidies for home construction.",
+            "link": "https://pmayg.nic.in/"
+        },
+        {
+            "id": 5,
+            "name": "Maharashtra Organic Farming Mission",
+            "desc": "Financial and technical support for farmers switching to organic agriculture.",
+            "link": "https://mahaagri.gov.in/"
+        },
+        {
+            "id": 6,
+            "name": "Jal Jivan Kranti Mission",
+            "desc": "Water conservation and rainwater harvesting support for farms in dry regions.",
+            "link": "https://mahaagri.gov.in/"
+        }
+    ],
+    "up": [
+        {
+            "id": 1,
+            "name": "Pradhan Mantri Kisan Samman Nidhi (PM-Kisan)",
+            "desc": "Income support to UP farmers through direct benefit transfer every quarter.",
+            "link": "https://pmkisan.gov.in/"
+        },
+        {
+            "id": 2,
+            "name": "UP Krishi Credit Card",
+            "desc": "Low-cost loans for small and marginal farmers to buy seeds, fertilizer, and equipment.",
+            "link": "https://upagriculture.com/"
+        },
+        {
+            "id": 3,
+            "name": "UP Bee-Keeping Subsidy Scheme",
+            "desc": "Grants and training for apiculture to increase farm income through honey production.",
+            "link": "https://upagriculture.com/"
+        },
+        {
+            "id": 4,
+            "name": "State Fasal Bima Yojana",
+            "desc": "Crop insurance support for farmers facing losses from floods, drought, or pests.",
+            "link": "https://upagriculture.com/"
+        },
+        {
+            "id": 5,
+            "name": "UP Organic Mission",
+            "desc": "Subsidies to adopt organic farming and access higher-value markets.",
+            "link": "https://upagriculture.com/"
+        },
+        {
+            "id": 6,
+            "name": "UP Solar Pump Yojana",
+            "desc": "Support for solar irrigation pumps to reduce power costs and improve water use.",
+            "link": "https://upagriculture.com/"
+        }
+    ],
+    "pb": [
+        {
+            "id": 1,
+            "name": "Mera Pind Smart Pind",
+            "desc": "Village-level development program supporting farmers with modern infrastructure.",
+            "link": "https://punjab.agriculture.gov.in/"
+        },
+        {
+            "id": 2,
+            "name": "Punjab Crop Diversification Programme",
+            "desc": "Incentives for farmers to grow alternative crops and reduce reliance on paddy.",
+            "link": "https://punjab.agriculture.gov.in/"
+        },
+        {
+            "id": 3,
+            "name": "Pradhan Mantri Fasal Bima Yojana",
+            "desc": "State implementation of central crop insurance for better loss protection.",
+            "link": "https://pmfby.gov.in/"
+        },
+        {
+            "id": 4,
+            "name": "Punjab Kisan Credit Card",
+            "desc": "Quick credit facility for farmers to meet crop cycle and livestock needs.",
+            "link": "https://punjab.agriculture.gov.in/"
+        },
+        {
+            "id": 5,
+            "name": "Punjab Organic Support Scheme",
+            "desc": "Subsidies for organic inputs and certification for organic farmers.",
+            "link": "https://punjab.agriculture.gov.in/"
+        },
+        {
+            "id": 6,
+            "name": "Punjab Farm Mechanization Scheme",
+            "desc": "Subsidies for tractors, harvesters, and precision farming machines.",
+            "link": "https://punjab.agriculture.gov.in/"
+        }
+    ],
+    "gj": [
+        {
+            "id": 1,
+            "name": "Gujarat Krishi Mahotsav",
+            "desc": "Community outreach program offering training and subsidies to farmers.",
+            "link": "https://gujaratindia.gov.in/"
+        },
+        {
+            "id": 2,
+            "name": "Gujarat Kisan Credit Card",
+            "desc": "Low-interest agricultural loans to support crop cultivation and farm investment.",
+            "link": "https://gujaratindia.gov.in/"
+        },
+        {
+            "id": 3,
+            "name": "Gujarat Micro Irrigation Scheme",
+            "desc": "Subsidies for drip and sprinkler irrigation to conserve water on farms.",
+            "link": "https://gujaratindia.gov.in/"
+        },
+        {
+            "id": 4,
+            "name": "Gujarat Organic Farming Subsidy",
+            "desc": "Financial support for farmers adopting organic crop production methods.",
+            "link": "https://gujaratindia.gov.in/"
+        },
+        {
+            "id": 5,
+            "name": "Gujarat Solar Pump Scheme",
+            "desc": "Solar pump grants to reduce energy costs and improve irrigation reliability.",
+            "link": "https://gujaratindia.gov.in/"
+        },
+        {
+            "id": 6,
+            "name": "Gujarat Crop Insurance Support",
+            "desc": "State-level risk protection for farmers against natural disasters.",
+            "link": "https://gujaratindia.gov.in/"
+        }
+    ]
+}
