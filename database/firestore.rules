@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /feedbacks/{feedbackId} {
+      // Only allow creating new feedback entries with strict validation.
+      allow create: if isValidFeedback();
+
+      // Public reads disabled by default for production safety.
+      allow read, update, delete: if false;
+    }
+
+    function isValidFeedback() {
+      return request.resource.data.keys().hasOnly(['name', 'email', 'rating', 'message', 'submittedAt']) &&
+             request.resource.data.name is string &&
+             request.resource.data.name.size() >= 2 &&
+             request.resource.data.name.size() <= 80 &&
+             request.resource.data.email is string &&
+             request.resource.data.email.size() >= 5 &&
+             request.resource.data.email.size() <= 120 &&
+             request.resource.data.email.matches('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$') &&
+             request.resource.data.message is string &&
+             request.resource.data.message.size() >= 10 &&
+             request.resource.data.message.size() <= 1000 &&
+             request.resource.data.rating is int &&
+             request.resource.data.rating >= 1 &&
+             request.resource.data.rating <= 5 &&
+             request.resource.data.submittedAt is timestamp &&
+             request.time - request.resource.data.submittedAt < duration.value(10, 'm') &&
+             request.resource.data.submittedAt <= request.time;
+    }
+  }
+}

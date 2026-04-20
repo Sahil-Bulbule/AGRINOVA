@@ -31,6 +31,9 @@
             <span></span>
         </div>
         <div class="header-logo">AGRI<span>NOVA</span></div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" type="button" aria-label="Toggle dark and light mode">
+            <i class="fas fa-moon"></i>
+        </button>
     </header>
 
     <!-- Sidebar Navbar -->
@@ -112,7 +115,7 @@
     <!-- about section -->
     <section id="advisory" class="advisory reveal">
         <div class="section-header reveal">
-            <h2 class="section-title">About AgriNova</h2>
+            <h2 class="section-title">ABOUT AGRINOVA</h2>
             <p class="section-subtitle">The next generation of intelligent agricultural management.</p>
         </div>
         <div
@@ -157,7 +160,7 @@
     <!-- mission section -->
     <section id="about" class="reveal">
         <div class="section-header reveal">
-            <h2 class="section-title">Our Mission</h2>
+            <h2 class="section-title">OUR MISSIONS</h2>
             <p class="section-subtitle">Bridging the gap between traditional wisdom and modern technology.</p>
         </div>
         <div class="grid-3">
@@ -227,7 +230,7 @@
     <!-- drone banner -->
     <div class="drone-banner reveal" id="drone-mapping" style="background-color: darkslategrey;">
         <div>
-            <h2 style="font-size:3rem; margin-bottom:1.5rem;">AI Drone Mapping</h2>
+            <h2 style="font-size:3rem; margin-bottom:1.5rem;">AI DRONE MAPPING</h2>
             <p style="font-size:1.2rem; margin-bottom:2rem; opacity:0.9;">AI-powered drones scan agricultural fields
                 using advanced sensors to analyze crop health, soil moisture, and pest activity. This helps farmers make
                 faster and more accurate decisions.</p>
@@ -251,7 +254,7 @@
     <!-- forecast section -->
     <section id="weather" class="weather reveal">
         <div class="section-header reveal">
-            <h2 class="section-title">Live Forecast</h2>
+            <h2 class="section-title">LIVE FORECAST</h2>
             <p class="section-subtitle">Hyper-local weather insights tailored for your specific farm location.</p>
         </div>
         <div class="weather-container"
@@ -265,6 +268,9 @@
             </div>
 
             <div id="weatherDashboard" style="margin-top: 3rem; position: relative;">
+                <div class="loading-block">
+                    <i class="fas fa-spinner fa-spin"></i> Fetching live weather...
+                </div>
             </div>
             <div class="ai-assistant-row">
                 <div class="ai-assistant-card">
@@ -279,7 +285,7 @@
     <!-- market section -->
     <section id="market" class="market reveal">
         <div class="section-header reveal">
-            <h2 class="section-title">Live Trends Prices</h2>
+            <h2 class="section-title">LIVE TRENDS PRICES</h2>
             <p class="section-subtitle">Real-time daily rates from 1000+ local markets across India.</p>
         </div>
         <div class="weather-container" style="background: var(--card-bg); border-radius:30px; padding: 3rem;">
@@ -321,14 +327,18 @@
             <!-- Inline validation error -->
             <div id="trendsError" class="trends-error-msg" style="display:none;"></div>
 
-            <div id="trendsResult" class="trends-grid"></div>
+            <div id="trendsResult" class="trends-grid">
+                <div class="loading-block">
+                    <i class="fas fa-spinner fa-spin"></i> Loading market trends...
+                </div>
+            </div>
         </div>
     </section>
     <div class="section-separator"></div>
 
     <section id="india-map-trends" class="reveal">
         <div class="section-header reveal">
-            <h2 class="section-title">India Map Trends Explorer</h2>
+            <h2 class="section-title">INDIA MAP TRENDS EXPLORER</h2>
             <p class="section-subtitle">Click any state or union territory to view live trends crop prices and top
                 trend.
             </p>
@@ -369,7 +379,7 @@
         </div>
 
         <div class="section-header" style="position:relative; z-index:2; margin-bottom:4rem;">
-            <h2 class="section-title">AI Crop Recommendation</h2>
+                <h2 class="section-title">AI CROP RECOMMENDATION</h2>
             <p class="section-subtitle">Data-driven agricultural insights for absolute maximum seasonal yield.</p>
         </div>
 
@@ -448,7 +458,7 @@
     <!-- schemes section -->
     <section id="schemes">
         <div class="section-header">
-            <h2 class="section-title">Government Schemes</h2>
+            <h2 class="section-title">GOVERNMENT SCHEMES</h2>
             <p class="section-subtitle">Official support programs and financial aid for top 5 states.</p>
         </div>
         <div class="weather-container"
@@ -469,7 +479,7 @@
     <!-- modern techniques -->
     <section id="techniques">
         <div class="section-header">
-            <h2 class="section-title">Modern Techniques</h2>
+            <h2 class="section-title">MODERN TECHNIQUES</h2>
             <p class="section-subtitle">Science-backed methods for sustainable and high-yield agriculture.</p>
         </div>
         <div class="grid-3" id="techniquesGrid">
@@ -904,7 +914,7 @@
     <!-- feedback section -->
     <section id="feedback" class="reveal" autocomplete="off">
         <div class="section-header" autocomplete="off">
-            <h2 class="section-title">Share Your Feedback</h2>
+            <h2 class="section-title">SHARE YOUR FEEDBACK</h2>
             <p class="section-subtitle">Your insights help us grow better tools for you.</p>
         </div>
         <div class="weather-container"
@@ -943,6 +953,7 @@
                 <button type="submit" class="hero-btn"
                     style="width: 100%; padding: 1.2rem; border: none; font-size: 1.1rem; cursor: pointer;">Send
                     Feedback</button>
+                <div id="feedbackStatus" class="feedback-status" aria-live="polite"></div>
             </form>
         </div>
     </section>

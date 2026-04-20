@@ -291,7 +291,7 @@ body {
 
 .hero-content {
     position: relative;
-    z-index: 10;
+    z-index: 2;
     text-align: center;
     padding: 0 5%;
     max-width: 1200px;
@@ -317,7 +317,7 @@ body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    z-index: -1;
+    z-index: 0;
     /* Faster loading low-res fallback to prevent black screen */
     background: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=100&w=1000&auto=format&fit=crop') center/cover no-repeat;
 }
@@ -2503,4 +2503,514 @@ body {
     box-shadow:
         0 0 50px rgba(6, 182, 212, 0.3),
         0 30px 60px rgba(0,0,0,0.5) !important;
+}
+
+/* ===== Professional polish overrides ===== */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    line-height: 1.6;
+}
+
+.top-header {
+    background: transparent;
+    backdrop-filter: none;
+}
+
+.theme-toggle-btn {
+    margin-left: auto;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.06);
+    color: #f8fafc;
+    cursor: pointer;
+    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+}
+
+.theme-toggle-btn:hover {
+    transform: translateY(-2px);
+    border-color: rgba(74, 222, 128, 0.55);
+    background: rgba(74, 222, 128, 0.15);
+}
+
+.sidebar .nav-links a {
+    font-size: 0.86rem;
+}
+
+.sidebar .nav-links a.active {
+    box-shadow: 0 8px 18px rgba(16, 185, 129, 0.35);
+}
+
+.card,
+.trends-card,
+.stat-card,
+.hero-btn,
+.weather-btn,
+.btn-tab,
+.btn-tab-scheme {
+    transition: all 0.25s ease;
+}
+
+.loading-block {
+    width: 100%;
+    text-align: center;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: var(--text-dark);
+    font-weight: 700;
+}
+
+.feedback-wall {
+    display: grid;
+    gap: 1rem;
+}
+
+.feedback-status {
+    min-height: 24px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-align: center;
+    padding: 0.2rem 0.4rem;
+}
+
+.feedback-status.success {
+    color: #4ade80;
+}
+
+.feedback-status.error {
+    color: #fca5a5;
+}
+
+.feedback-status.warning {
+    color: #fcd34d;
+}
+
+/* Better mobile spacing */
+@media (max-width: 768px) {
+    .top-header {
+        height: 72px;
+        padding: 0 16px;
+    }
+
+    section {
+        padding: 4rem 1rem;
+    }
+
+    .weather-container {
+        padding: 1.25rem;
+        border-radius: 22px;
+    }
+
+    .hero-btn,
+    .weather-btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .sidebar {
+        width: min(88vw, 340px);
+    }
+}
+
+/* Light theme */
+body.light-theme {
+    --bg: #f4f7fb;
+    --card-bg: #ffffff;
+    --card-border: #dbe5ef;
+    --text-dark: #0f172a;
+    --text-light: #334155;
+    --text-card: #0f172a;
+}
+
+body.light-theme .top-header {
+    background: transparent;
+}
+
+body.light-theme .header-logo {
+    color: #0f172a;
+}
+
+body.light-theme .sidebar {
+    background: #f8fafc;
+}
+
+body.light-theme .sidebar .nav-links a {
+    color: #0f172a !important;
+    background: rgba(15, 23, 42, 0.04);
+    border-color: rgba(15, 23, 42, 0.08);
+}
+
+body.light-theme .loading-block {
+    background: #f1f5f9;
+    border-color: #dbe5ef;
+}
+
+/* Light theme readability + colorful cards */
+body.light-theme .weather-container {
+    background: linear-gradient(145deg, #ffffff 0%, #f8fbff 100%);
+    border: 1px solid #d3e1f1 !important;
+    box-shadow: 0 16px 35px rgba(15, 23, 42, 0.08) !important;
+}
+
+body.light-theme .card {
+    background: linear-gradient(150deg, #ffffff 0%, #f7fbff 70%, #eef7ff 100%);
+    border: 1px solid #d7e6f6 !important;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08) !important;
+}
+
+body.light-theme .card:hover {
+    background: linear-gradient(150deg, #f7fff8 0%, #f0fff5 100%) !important;
+    border-color: #9ad6b0 !important;
+}
+
+body.light-theme .trends-card {
+    background: linear-gradient(150deg, #fffdf7 0%, #fff8eb 100%);
+    border: 1px solid #f3deb1 !important;
+    box-shadow: 0 12px 28px rgba(120, 53, 15, 0.09) !important;
+}
+
+body.light-theme .trends-card:hover {
+    background: linear-gradient(150deg, #fff7e6 0%, #ffefcf 100%) !important;
+    border-color: #e7b35c !important;
+}
+
+body.light-theme .stat-card {
+    background: linear-gradient(145deg, #f5fff8 0%, #eaf9f0 100%);
+    border: 1px solid #b9e5c8 !important;
+    box-shadow: 0 10px 24px rgba(22, 101, 52, 0.1) !important;
+}
+
+body.light-theme .map-data-panel,
+body.light-theme .chart-shell,
+body.light-theme .ai-assistant-card {
+    background: linear-gradient(145deg, #ffffff 0%, #f3f8ff 100%);
+    border: 1px solid #d7e6f6 !important;
+}
+
+body.light-theme .section-subtitle,
+body.light-theme .card-body p,
+body.light-theme .advisory-point p,
+body.light-theme .map-default-message {
+    color: #334155 !important;
+}
+
+/* Light theme contrast fixes for JS-rendered content */
+body.light-theme #weatherDashboard h1,
+body.light-theme #weatherDashboard h2,
+body.light-theme #weatherDashboard h3,
+body.light-theme #weatherDashboard p,
+body.light-theme #weatherDashboard strong,
+body.light-theme #weatherDashboard span {
+    color: #0f172a !important;
+}
+
+body.light-theme #weatherDashboard [style*="Live Now"] {
+    color: #0f172a !important;
+}
+
+body.light-theme #weatherDashboard img {
+    filter: none !important;
+}
+
+body.light-theme #trendsResult .trends-card h3 {
+    color: #0f172a !important;
+}
+
+body.light-theme #trendsResult .trends-card [style*="font-size: 2.2rem"] {
+    color: #16a34a !important;
+}
+
+body.light-theme #trendsResult .trends-card [style*="color: rgba(203,213,225,0.85)"],
+body.light-theme #trendsResult .trends-card [style*="color: rgba(203,213,225,0.9)"] {
+    color: #334155 !important;
+}
+
+body.light-theme #topTrendBox {
+    color: #166534 !important;
+    background: #ecfdf3 !important;
+    border-color: #86efac !important;
+}
+
+body.light-theme #trendsInsightsBox {
+    background: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+}
+
+body.light-theme #trendsInsightsBox span,
+body.light-theme #trendsInsightsBox strong,
+body.light-theme #trendsInsightsBox div {
+    color: #0f172a !important;
+}
+
+body.light-theme .ai-assistant-card__label {
+    color: #166534 !important;
+}
+
+body.light-theme .ai-help-btn {
+    color: #ffffff !important;
+}
+
+/* Light theme dropdown/readability */
+body.light-theme select,
+body.light-theme input,
+body.light-theme textarea {
+    color: #0f172a !important;
+    background: #ffffff !important;
+    border-color: #bfdbfe !important;
+}
+
+body.light-theme select option {
+    background: #ffffff !important;
+    color: #0f172a !important;
+}
+
+body.light-theme .trends-state-select option,
+body.light-theme #recommendationForm option,
+body.light-theme #feedbackForm option {
+    background: #ffffff !important;
+    color: #0f172a !important;
+}
+
+/* White theme visual upgrade (more color, better contrast) */
+body.light-theme {
+    background:
+        radial-gradient(circle at 12% 8%, rgba(59, 130, 246, 0.12), transparent 38%),
+        radial-gradient(circle at 88% 18%, rgba(16, 185, 129, 0.14), transparent 42%),
+        radial-gradient(circle at 50% 92%, rgba(168, 85, 247, 0.1), transparent 38%),
+        #eef3f9;
+}
+
+body.light-theme section:nth-of-type(odd) {
+    background: linear-gradient(180deg, #f6fbff 0%, #edf5ff 100%) !important;
+}
+
+body.light-theme section:nth-of-type(even) {
+    background: linear-gradient(180deg, #f7fff8 0%, #eefcf4 100%) !important;
+}
+
+/* Keep hero slider image visible in light theme */
+body.light-theme section.hero,
+body.light-theme .hero {
+    background: transparent !important;
+}
+
+body.light-theme .section-title {
+    background: linear-gradient(135deg, #0f766e 0%, #2563eb 45%, #16a34a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+body.light-theme .hero-btn,
+body.light-theme .weather-btn,
+body.light-theme .trends-search-btn {
+    background: linear-gradient(135deg, #16a34a 0%, #0ea5e9 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 14px 26px rgba(14, 165, 233, 0.2) !important;
+}
+
+body.light-theme .hero-btn:hover,
+body.light-theme .weather-btn:hover,
+body.light-theme .trends-search-btn:hover {
+    filter: brightness(1.06);
+    box-shadow: 0 18px 30px rgba(22, 163, 74, 0.22) !important;
+}
+
+body.light-theme .ai-assistant-card {
+    background: linear-gradient(145deg, #ffffff 0%, #f2f8ff 65%, #eefcf4 100%) !important;
+}
+
+/* Fix: recommendation result text too faded in white theme */
+body.light-theme #recommendationResult {
+    background: linear-gradient(145deg, #ffffff 0%, #f0f9ff 100%) !important;
+    border-color: #bae6fd !important;
+    color: #0f172a !important;
+}
+
+body.light-theme #recommendationResult * {
+    color: #0f172a !important;
+}
+
+body.light-theme #recommendationResult i {
+    color: #f59e0b !important;
+}
+
+body.light-theme #recommendationResult strong,
+body.light-theme #recommendationResult h3,
+body.light-theme #recommendationResult [style*="Recommended Crop"] {
+    color: #166534 !important;
+}
+
+/* Fix: thank-you card text contrast + colorful style */
+body.light-theme #feedbackThankYouCard {
+    background: linear-gradient(145deg, #ecfdf3 0%, #d9fbe8 55%, #dbeafe 100%) !important;
+    border: 1px solid #86efac !important;
+    box-shadow: 0 18px 34px rgba(22, 163, 74, 0.14) !important;
+}
+
+body.light-theme #feedbackThankYouCard h3 {
+    color: #166534 !important;
+}
+
+body.light-theme #feedbackThankYouCard p {
+    color: #1e3a8a !important;
+    font-weight: 600;
+}
+
+body.light-theme #feedbackThankYouCard i {
+    color: #16a34a !important;
+}
+
+/* ===== Tablet responsive ===== */
+@media (max-width: 1024px) {
+    .hero-brand {
+        font-size: 4.8rem;
+        letter-spacing: 7px;
+    }
+
+    .animated-text {
+        font-size: 2.8rem !important;
+    }
+
+    .grid-3 {
+        grid-template-columns: repeat(2, minmax(260px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .weather-container {
+        padding: 1.5rem;
+        border-radius: 24px;
+    }
+
+    .tabs-nav {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 0.7rem;
+    }
+
+    #indiaStateTrendsMap {
+        height: 380px;
+        min-height: 380px;
+    }
+}
+
+/* ===== Mobile responsive ===== */
+@media (max-width: 768px) {
+    .header-logo {
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+    }
+
+    .top-header {
+        gap: 12px;
+    }
+
+    .hero {
+        height: auto;
+        min-height: 86vh;
+        padding-top: 8rem;
+        padding-bottom: 4rem;
+    }
+
+    .hero-brand {
+        font-size: 2.7rem;
+        letter-spacing: 2px;
+    }
+
+    .animated-text {
+        font-size: 1.8rem !important;
+        line-height: 1.3;
+    }
+
+    .hero-content div[style*="display:flex"] {
+        flex-direction: column;
+        gap: 0.8rem !important;
+        align-items: stretch;
+    }
+
+    .grid-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .card-body {
+        padding: 1.2rem;
+    }
+
+    .trends-selector-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .trends-search-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .weather-search {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .weather-search input,
+    .weather-search select,
+    #cityInput,
+    #trendsOtherInput,
+    .trends-state-select {
+        width: 100% !important;
+    }
+
+    #weatherDashboard>div {
+        grid-template-columns: 1fr !important;
+        padding: 1.25rem !important;
+        border-radius: 20px !important;
+        gap: 1rem !important;
+    }
+
+    #weatherDashboard h2 {
+        font-size: 2rem !important;
+    }
+
+    #weatherDashboard h1 {
+        font-size: 3rem !important;
+    }
+
+    .map-trends-container {
+        grid-template-columns: 1fr !important;
+    }
+
+    .map-data-panel {
+        padding: 1rem;
+        min-height: auto;
+    }
+
+    #indiaStateTrendsMap {
+        height: 280px;
+        min-height: 280px;
+    }
+
+    .chart-shell {
+        min-height: 220px;
+    }
+
+    #feedbackForm>div[style*="grid-template-columns: 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+    }
+
+    .footer-status-bar {
+        flex-wrap: wrap;
+        gap: 0.8rem;
+    }
+
+    .thank-you-text {
+        font-size: 2rem;
+    }
 }

@@ -1,8 +1,7 @@
 // 🔗 Backend API Configuration
 const RENDER_URL = "https://agrinova-smart-agriculture-web-platform-3d16.onrender.com";
-const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname === "")
-    ? "http://localhost:5000"
-    : RENDER_URL;
+const isLocalDevHost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+const API_BASE = isLocalDevHost ? "http://localhost:5000" : RENDER_URL;
 
 console.log("🚀 AgriNova API Base Connected:", API_BASE);
 
@@ -15,6 +14,8 @@ let lastWeatherData = null;
 let lastRecommendationData = null;
 let lastLiveTrend = null;
 let lastLiveTrendState = null;
+let feedbackSubmitInProgress = false;
+let feedbackSubmittedThisSession = false;
 
 // --- Initialize ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -22,15 +23,16 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initApp() {
+    initThemeToggle();
+    initSmoothScrollNavigation();
+    initActiveSectionHighlight();
     fetchWeather("Lucknow");
     fetchLiveTrends("Punjab");       // default state on load
-    fetchTrends();
     fetchSchemes("central");
     initTabs();
     initTrendsSelector();       // new dropdown logic
     initAIAssistant();
     initFeedbackForm();
-    loadFeedbacksFromFirestore();
     initRecommendationForm();
     initTechniques();
     initIndiaMapTrends();
@@ -83,9 +85,10 @@ async function fetchWeather(city) {
     if (!container) return;
 
     clearWeatherError();
+    showLoadingState(container, "Fetching live weather...");
 
     try {
-        const res = await fetch(`${API_BASE}/weather?city=${encodeURIComponent(city)}`);
+        const res = await fetchWithTimeout(`${API_BASE}/weather?city=${encodeURIComponent(city)}`, {}, 12000);
         const data = await res.json();
         if (!res.ok || data.error) {
             const apiError = data?.error || `Status ${res.status}`;
@@ -346,8 +349,11 @@ function clearTrendsError() {
 
 // --- Live Trends Logic ---
 async function fetchLiveTrends(state) {
+    const trendsNode = document.getElementById('trendsResult');
+    if (trendsNode) showLoadingState(trendsNode, "Loading market trends...");
+
     try {
-        const res = await fetch(`${API_BASE}/live-trends?state=${encodeURIComponent(state)}`);
+        const res = await fetchWithTimeout(`${API_BASE}/live-trends?state=${encodeURIComponent(state)}`, {}, 12000);
         const data = await res.json();
         if (data.success === false) {
             showTrendsSelectorError(`ℹ️ ${data.message}`, 'info');
@@ -591,10 +597,33 @@ function initFeedbackForm() {
     });
     form.onsubmit = async (e) => {
         e.preventDefault();
+        if (feedbackSubmitInProgress) return;
+        if (feedbackSubmittedThisSession) {
+            const statusNode = document.getElementById('feedbackStatus');
+            setFeedbackStatus(statusNode, "Feedback already submitted.", "warning");
+            return;
+        }
+
+        const statusNode = document.getElementById('feedbackStatus');
+        clearFeedbackStatus(statusNode);
+
+        const validationError = validateFeedbackForm();
+        if (validationError) {
+            setFeedbackStatus(statusNode, validationError, "error");
+            return;
+        }
+
+        const waitSeconds = getFeedbackCooldownRemainingSeconds();
+        if (waitSeconds > 0) {
+            setFeedbackStatus(statusNode, `Please wait ${waitSeconds}s before submitting again.`, "warning");
+            return;
+        }
+
         const btn = form.querySelector('button[type="submit"]');
+        feedbackSubmitInProgress = true;
         if (btn) {
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending to Cloud...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
         }
 
         const payload = {
@@ -610,39 +639,50 @@ function initFeedbackForm() {
         try {
             await saveFeedbackWithFallback(payload);
             console.log("✅ SUCCESS: Feedback saved");
-
-            form.innerHTML = `
-                <div style="
-                    text-align: center;
-                    padding: 3rem 2rem;
-                    background: linear-gradient(135deg, rgba(76,175,80,0.12), rgba(56,142,60,0.06));
-                    border: 1px solid rgba(76,175,80,0.4);
-                    border-radius: 24px;
-                    box-shadow: 0 0 30px rgba(76,175,80,0.2), 0 20px 50px rgba(0,0,0,0.3);
-                    animation: fadeInUp 0.5s ease forwards;
-                ">
-                    <div style="font-size: 3.5rem; margin-bottom: 1rem;">🎉</div>
-                    <h3 style="margin: 0 0 0.6rem; font-size: 1.8rem; font-weight: 900; color: #4ade80;">Thank You!</h3>
-                    <p style="margin: 0 0 0.5rem; color: #a7f3d0; font-size: 1.05rem; font-weight: 600;">Your feedback has been submitted successfully.</p>
-                    <p style="margin: 0; color: rgba(161,233,161,0.6); font-size: 0.9rem;">It means a lot to us 🌾</p>
-                </div>
-            `;
-            loadFeedbacksFromFirestore();
-
+            setFeedbackStatus(statusNode, "Feedback submitted successfully. Thank you!", "success");
+            form.reset();
+            selectedRating = 0;
+            updateStarDisplay(selectedRating);
+            setFeedbackSubmissionCooldown();
+            feedbackSubmittedThisSession = true;
+            showFeedbackThankYouState();
         } catch (err) {
             console.error("🔥 FIRESTORE ERROR:", err);
-
-            // Show inline error — no alert popup
-            const errBox = document.createElement('div');
-            errBox.style.cssText = "margin-top:1rem; padding:1rem 1.5rem; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.35); border-radius:14px; color:#fca5a5; font-weight:700; font-size:0.95rem; text-align:center;";
-            errBox.textContent = "⚠️ Could not submit feedback. Please try again.";
-            if (btn) {
+            setFeedbackStatus(statusNode, getFriendlyFirebaseError(err), "error");
+        } finally {
+            feedbackSubmitInProgress = false;
+            if (btn && !feedbackSubmittedThisSession) {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-redo"></i> Retry';
-                btn.parentElement.insertBefore(errBox, btn);
+                btn.innerHTML = 'Send Feedback';
             }
         }
     };
+}
+
+function showFeedbackThankYouState() {
+    const form = document.getElementById('feedbackForm');
+    if (!form) return;
+    form.style.display = 'none';
+
+    const parent = form.parentElement;
+    if (!parent) return;
+
+    let thankYouCard = document.getElementById('feedbackThankYouCard');
+    if (!thankYouCard) {
+        thankYouCard = document.createElement('div');
+        thankYouCard.id = 'feedbackThankYouCard';
+        thankYouCard.style.cssText = "display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:0.8rem; min-height:260px; border-radius:20px; border:1px solid rgba(74,222,128,0.35); background:rgba(74,222,128,0.1); box-shadow:0 15px 35px rgba(0,0,0,0.25); padding:2rem;";
+        thankYouCard.innerHTML = `
+            <div style="width:76px; height:76px; border-radius:999px; background:rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,0.25);">
+                <i class="fas fa-circle-check" style="font-size:2rem; color:#22c55e;"></i>
+            </div>
+            <h3 style="font-size:2rem; font-weight:800; color:#bbf7d0; margin:0;">Thank You!</h3>
+            <p style="margin:0; color:#e2e8f0; font-size:1.05rem;">Your feedback has been submitted successfully.</p>
+        `;
+        parent.appendChild(thankYouCard);
+    } else {
+        thankYouCard.style.display = 'flex';
+    }
 }
 
 async function loadFeedbacksFromFirestore() {
@@ -661,7 +701,7 @@ async function loadFeedbacksFromFirestore() {
         }
 
         // Firebase unavailable (or empty): load from backend so the section still works on live deploy.
-        const res = await fetch(`${API_BASE}/get-feedbacks`);
+        const res = await fetchWithTimeout(`${API_BASE}/get-feedbacks`, {}, 12000);
         if (!res.ok) throw new Error(`Status ${res.status}`);
         const feedbacks = await res.json();
         if (!Array.isArray(feedbacks) || feedbacks.length === 0) {
@@ -682,11 +722,11 @@ async function saveFeedbackWithFallback(payload) {
         return;
     }
 
-    const res = await fetch(`${API_BASE}/feedback`, {
+    const res = await fetchWithTimeout(`${API_BASE}/feedback`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
-    });
+    }, 12000);
     if (!res.ok) throw new Error(`Feedback save failed with status ${res.status}`);
 }
 
@@ -694,7 +734,10 @@ function buildFeedbackCards(feedbacks) {
     return feedbacks.map((f) => {
         const safeRating = Math.min(5, Math.max(1, Number(f.rating) || 5));
         const dateRaw = f.submittedAt || f.date;
-        const dateStr = dateRaw ? new Date(dateRaw).toLocaleString() : 'Recently';
+        const parsedDate = dateRaw ? new Date(dateRaw) : null;
+        const dateStr = parsedDate && !Number.isNaN(parsedDate.getTime())
+            ? parsedDate.toLocaleString()
+            : (dateRaw || 'Recently');
         return `
             <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 20px; border-left: 4px solid #f59e0b; transition: 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
@@ -719,6 +762,114 @@ function disableFeedbackInputSuggestions(form) {
         field.setAttribute('autocapitalize', 'none');
         field.setAttribute('spellcheck', 'false');
     });
+}
+
+function showLoadingState(container, message) {
+    container.innerHTML = `<div class="loading-block"><i class="fas fa-spinner fa-spin"></i> ${message}</div>`;
+}
+
+async function fetchWithTimeout(url, options = {}, timeoutMs = 12000) {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+        return await fetch(url, { ...options, signal: controller.signal });
+    } catch (error) {
+        if (error.name === "AbortError") {
+            throw new Error("Request timeout. Please check your connection and try again.");
+        }
+        throw error;
+    } finally {
+        clearTimeout(id);
+    }
+}
+
+function validateFeedbackForm() {
+    const name = document.getElementById('name')?.value.trim() || "";
+    const email = document.getElementById('email')?.value.trim() || "";
+    const message = document.getElementById('message')?.value.trim() || "";
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!name || name.length < 2) return "Please enter a valid name.";
+    if (!emailRegex.test(email)) return "Please enter a valid email address.";
+    if (!message || message.length < 10) return "Message should be at least 10 characters.";
+    return "";
+}
+
+function setFeedbackStatus(node, message, type = "info") {
+    if (!node) return;
+    node.className = `feedback-status ${type}`;
+    node.textContent = message;
+}
+
+function clearFeedbackStatus(node) {
+    if (!node) return;
+    node.className = 'feedback-status';
+    node.textContent = '';
+}
+
+function getFriendlyFirebaseError(error) {
+    const msg = String(error?.message || "").toLowerCase();
+    if (msg.includes("permission-denied")) return "Permission denied. Please check Firebase security rules.";
+    if (msg.includes("unavailable") || msg.includes("timeout")) return "Network is slow. Please try again in a moment.";
+    return "Could not submit feedback right now. Please try again.";
+}
+
+function setFeedbackSubmissionCooldown() {
+    localStorage.setItem("feedback_last_submit_at", String(Date.now()));
+}
+
+function getFeedbackCooldownRemainingSeconds() {
+    const last = Number(localStorage.getItem("feedback_last_submit_at") || 0);
+    if (!last) return 0;
+    const cooldownMs = 20000; // 20 seconds
+    const remaining = cooldownMs - (Date.now() - last);
+    return remaining > 0 ? Math.ceil(remaining / 1000) : 0;
+}
+
+function initSmoothScrollNavigation() {
+    const links = Array.from(document.querySelectorAll('.sidebar .nav-links a[href^="#"]'));
+    links.forEach((link) => {
+        link.addEventListener('click', (event) => {
+            const href = link.getAttribute('href');
+            if (!href) return;
+            const target = document.querySelector(href);
+            if (!target) return;
+            event.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+}
+
+function initActiveSectionHighlight() {
+    const links = Array.from(document.querySelectorAll('.sidebar .nav-links a[href^="#"]'));
+    const sections = links
+        .map((link) => document.querySelector(link.getAttribute('href')))
+        .filter(Boolean);
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            links.forEach((l) => l.classList.remove('active'));
+            const active = links.find((l) => l.getAttribute('href') === `#${entry.target.id}`);
+            if (active) active.classList.add('active');
+        });
+    }, { rootMargin: "-35% 0px -55% 0px", threshold: 0.05 });
+
+    sections.forEach((section) => observer.observe(section));
+}
+
+function initThemeToggle() {
+    const btn = document.getElementById('themeToggleBtn');
+    // Permanent dark mode only.
+    document.body.classList.remove('light-theme');
+    localStorage.setItem('agrinova_theme', 'dark');
+    if (!btn) return;
+    btn.style.display = 'none';
+}
+
+function updateThemeIcon(btn) {
+    const isLight = document.body.classList.contains('light-theme');
+    btn.innerHTML = isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
 }
 // --- Recommendation Logic (CRITICAL FIX) ---
 function initRecommendationForm() {
@@ -869,23 +1020,44 @@ async function handleStateMapClick(stateName, markerNode) {
     if (defaultMsg) defaultMsg.style.display = "none";
     if (loading) loading.style.display = "block";
     try {
-        const res = await fetch(`${API_BASE}/live-trends?state=${encodeURIComponent(stateName)}`);
+        const res = await fetchWithTimeout(`${API_BASE}/live-trends?state=${encodeURIComponent(stateName)}`, {}, 12000);
         const data = await res.json();
+        if (!res.ok || data.success === false || !Array.isArray(data.crops) || data.crops.length === 0) {
+            throw new Error(data?.message || `Status ${res.status}`);
+        }
         renderIndiaTrendsUI(data);
         markerNode.bindPopup(`<strong>${data.state}</strong><br/>Top Trend: ${data.top_trend}`).openPopup();
         if (trendBox) { trendBox.style.display = "block"; trendBox.innerHTML = `Trending Crop: ${data.top_trend}`; }
-    } catch (error) { console.error(error); }
+    } catch (error) {
+        console.error("India map trends failed:", error);
+        if (trendBox) {
+            trendBox.style.display = "block";
+            trendBox.innerHTML = "Trends data unavailable for this state right now.";
+        }
+        renderIndiaTrendsUI({ state: stateName, crops: [] });
+    }
     finally { if (loading) loading.style.display = "none"; }
 }
 
 function renderIndiaTrendsUI(payload) {
     const chartCanvas = document.getElementById("indiaTrendsChart");
     if (!chartCanvas) return;
-    const labels = payload.crops.map(i => i.name);
-    const prices = payload.crops.map(i => i.price);
-    let high = payload.crops.reduce((max, i) => i.price > max.price ? i : max, payload.crops[0]);
-    let low = payload.crops.reduce((min, i) => i.price < min.price ? i : min, payload.crops[0]);
+    const crops = Array.isArray(payload?.crops) ? payload.crops : [];
+    const labels = crops.map(i => i.name);
+    const prices = crops.map(i => i.price);
     const insights = document.getElementById("trendsInsightsBox");
+
+    if (crops.length === 0) {
+        if (insights) {
+            insights.style.display = "block";
+            insights.innerHTML = `<div style="color:#fca5a5; font-weight:700;"><i class="fas fa-circle-exclamation"></i> No trends data available for this state currently.</div>`;
+        }
+        if (indiaTrendsChart) indiaTrendsChart.destroy();
+        return;
+    }
+
+    let high = crops.reduce((max, i) => i.price > max.price ? i : max, crops[0]);
+    let low = crops.reduce((min, i) => i.price < min.price ? i : min, crops[0]);
     if (insights) {
         insights.style.display = "block";
         insights.innerHTML = `
