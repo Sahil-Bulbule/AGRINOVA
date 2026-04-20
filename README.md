@@ -1,53 +1,136 @@
-## AgriNova - Smart Agriculture Website
+🥈 2nd Ranker Project – Diploma In Computer Technology (Polytechnic)
 
-AgriNova is a clean, multi-section smart agriculture website with powerful Weather, Mandi, Schemes, Advisory, Feedback, and optional Auth-based preferences.
+🌱 AgriNova – Smart Agriculture Web Platform
 
-## Folder Structure
+AgriNova is a modern, full-stack smart agriculture web platform designed to empower farmers and users with real-time insights, crop recommendations, and market intelligence.
 
-- `frontend/`
-  - `index.html`, `index.css`, `main.js`
-- `backend/`
-  - `app.py`
-  - `routes/` (`weather.py`, `mandi.py`, `prediction.py`, `insights.py`, `recommendation.py`)
-  - `models/user.py`
-  - `requirements.txt`
-  - `data/` (`mandi_data.json`, `mandi.json`, `schemes.json`, `trends.json`)
-  - `database/agrinova.db` (auto-created SQLite database)
-- `api/`
-  - `README.md` (endpoint reference and payload examples)
-- `assets/`
-  - `README.md` (reserved for icons, map SVGs, and report assets)
+It integrates weather data, mandi prices, predictive analytics, and government schemes into a clean, user-friendly interface.
 
-## Backend APIs
+🚀 Features :-
 
-1. `GET /weather?city=` (secure backend weather API integration)
-2. `GET /mandi?state=&city=&crop=` (historical data + prediction + insights)
-3. `GET /price-prediction?state=&city=&crop=`
-4. `GET /insights?state=&city=&crop=`
-5. `POST /recommend` (month + temperature + soil type)
-6. `POST /signup`, `POST /login` (optional auth)
-7. `GET/POST /preferences` (save user state/crop)
+--> 🌦️ Real-Time Weather Data
+   Fetch live weather using backend API integration
+--> 📊 Mandi Price Analysis
+   View historical data, trends, and price predictions
+--> 📈 Crop Price Prediction
+   Smart insights based on past data
+--> 🧠 AI-Based Crop Recommendation
+   Suggests crops based on:
+      Month
+      Temperature
+      Soil Type
+--> 🏛️ Government Schemes Section
+   Access agriculture-related schemes
+--> 💡 Smart Insights Dashboard
+   Visual trends and analytics
+--> 📝 Feedback System
+   Users can submit feedback (stored in backend)
 
-## Step-by-Step Setup Instructions
+🏗️ Project Structure :-
 
-1. Open terminal at project root:
-   - `cd "c:\Users\sahil\OneDrive\Desktop\POLY PROJECT"`
+AgriNova/
+│
+├── frontend/
+│   ├── index.html
+│   ├── index.css
+│   └── main.js
+│
+├── backend/
+│   ├── app.py
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   ├── insights.py
+│   │   ├── predictions.py
+│   │   ├── recommendation.py
+│   │   ├── trends.py
+│   │   └── weather.py
+│   │
+│   ├── data/
+│   │   ├── schemes.json
+│   │   ├── trends_data.json
+│   │   └── trends.json
+│   │
+│   ├── database/
+│   │   └── firebase.js
+│
+└── README.md
 
-2. Install backend dependencies:
-   - `python -m pip install -r "backend/requirements.txt"`
+🔗 Backend API Endpoints :-
 
-3. Start backend server:
-   - `python "backend/app.py"`
+--> 📡 Data APIs
+    GET /weather?city=
+→  Fetch real-time weather data
+      GET /mandi?state=&city=&crop=
+→  Get mandi prices + trends + insights
+      GET /price-prediction?state=&city=&crop=
+→  Predict future crop prices
+      GET /insights?state=&city=&crop=
+→  Analytical insights
 
-4. Open frontend:
-   - Open `frontend/index.html` in browser (or Live Server).
+🤖 Smart Crop Recommendation :-
 
-5. Open website sections directly from homepage navigation:
-   - Weather and Mandi now use backend APIs only.
-   - Advisory includes smart crop recommendation form.
+POST /recommend
+→ Input:
+    Month
+    Temperature
+    Soil Type
 
-## API Base URL
+→ Output: Recommended crops
 
-- `http://localhost:5000`
+⚙️ Setup & Installation :-
 
-See `api/README.md` for all endpoint details.
+1️⃣ Clone / Open Project :-
+-->  cd "c:\Users\sahil\OneDrive\Desktop\POLY PROJECT"
+
+2️⃣ Install Backend Dependencies :-
+-->  python -m pip install -r backend/requirements.txt
+
+3️⃣ Run Backend Server :-
+-->  python backend/app.py
+
+Server runs on :-
+http://localhost:5000
+
+4️⃣ Run Frontend :-
+--> Open frontend/index.html manually
+    OR
+--> Use Live Server (Recommended)
+
+🌐 How It Works :- 
+
+1] Frontend interacts with backend APIs
+2] Backend processes :-
+   Weather data
+   Trends datasets
+   Predictions & insights
+3] SQLite database stores :-
+   Feedback
+ 
+📊 Data Source :-
+
+1] Current version uses structured static / syesthematic datasets for:
+   Market prices
+   Trends & insights
+   Government schemes
+2] Designed in a way that it can be easily upgraded to:
+   Real-time APIs
+   Live government/agriculture datasets
+
+🎯 Key Highlights :- 
+
+1] Clean UI with structured sections
+2] Full-stack architecture
+3] Real-world agriculture use-case
+4] API-driven design
+5] Scalable & modular backend
+
+📌 Future Improvements :- 
+
+1] Live API integration for mandi prices
+2] Advanced ML-based prediction models
+3] Mobile responsiveness improvements
+4] User dashboard analytics
+
+👨‍💻 Author :- 
+
+Sahil 

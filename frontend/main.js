@@ -845,12 +845,16 @@ function initActiveSectionHighlight() {
     const sections = links
         .map((link) => document.querySelector(link.getAttribute('href')))
         .filter(Boolean);
+    let activeSectionId = "";
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
+            const nextId = entry.target.id;
+            if (!nextId || nextId === activeSectionId) return;
+            activeSectionId = nextId;
             links.forEach((l) => l.classList.remove('active'));
-            const active = links.find((l) => l.getAttribute('href') === `#${entry.target.id}`);
+            const active = links.find((l) => l.getAttribute('href') === `#${nextId}`);
             if (active) active.classList.add('active');
         });
     }, { rootMargin: "-35% 0px -55% 0px", threshold: 0.05 });
@@ -1145,10 +1149,12 @@ function initScrollReveal() {
     const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.isIntersecting) { entry.target.classList.add('active'); }
-            else { entry.target.classList.remove('active'); }
+            if (!entry.isIntersecting) return;
+            // Reveal once and stop observing to reduce scroll-time work.
+            entry.target.classList.add('active');
+            observer.unobserve(entry.target);
         });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
     reveals.forEach(el => observer.observe(el));
 }
 

@@ -1,4 +1,4 @@
-// 🔥 AgriNova Firebase Configuration
+// AgriNova Firebase Configuration
 // This file initializes the cloud connection for Feedbacks
 
 const firebaseConfig = {
