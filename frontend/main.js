@@ -573,6 +573,7 @@ function initTabs() {
 function initFeedbackForm() {
     const form = document.getElementById('feedbackForm');
     if (!form) return;
+    disableFeedbackInputSuggestions(form);
     const stars = Array.from(document.querySelectorAll('.rating-star'));
     let selectedRating = 0;
     const updateStarDisplay = (rating) => {
@@ -607,12 +608,8 @@ function initFeedbackForm() {
         console.log("📝 Sending to Firestore Collection 'feedbacks':", payload);
 
         try {
-            // Use the global 'db' variable from firebase.js
-            if (!db) throw new Error("Firebase Database (db) is not initialized!");
-
-            await db.collection("feedbacks").add(payload);
-            
-            console.log("✅ SUCCESS: Saved to Firebase!");
+            await saveFeedbackWithFallback(payload);
+            console.log("✅ SUCCESS: Feedback saved");
 
             form.innerHTML = `
                 <div style="
@@ -653,39 +650,75 @@ async function loadFeedbacksFromFirestore() {
     if (!wall) return;
 
     try {
-        if (!db) return;
-        const querySnapshot = await db.collection("feedbacks")
-            .limit(10)
-            .get();
-        
-        if (querySnapshot.empty) {
-            wall.innerHTML = `<p style="text-align: center; color: var(--text-light); font-style: italic; opacity: 0.6;">No feedbacks found in Firebase. Be the first! 🚀</p>`;
-            return;
+        if (window.db) {
+            const querySnapshot = await window.db.collection("feedbacks").limit(10).get();
+            if (!querySnapshot.empty) {
+                const feedbacks = [];
+                querySnapshot.forEach((doc) => feedbacks.push(doc.data()));
+                wall.innerHTML = buildFeedbackCards(feedbacks);
+                return;
+            }
         }
 
-        let html = '';
-        querySnapshot.forEach((doc) => {
-            const f = doc.data();
-            const dateStr = f.submittedAt ? new Date(f.submittedAt).toLocaleString() : 'Recently';
-            html += `
-                <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 20px; border-left: 4px solid #f59e0b; transition: 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                        <strong style="color: #f59e0b; font-size: 1.1rem;">${f.name}</strong>
-                        <div style="color: #fbbf24; font-size: 0.9rem;">
-                            ${'★'.repeat(f.rating)}${'☆'.repeat(5 - f.rating)}
-                        </div>
-                    </div>
-                    <p style="color: #f1f5f9; margin-bottom: 0.5rem; line-height: 1.5;">"${f.message}"</p>
-                    <div style="font-size: 0.8rem; color: var(--text-light); opacity: 0.6; text-align: right;">${dateStr}</div>
-                </div>
-            `;
-        });
-        wall.innerHTML = html;
+        // Firebase unavailable (or empty): load from backend so the section still works on live deploy.
+        const res = await fetch(`${API_BASE}/get-feedbacks`);
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        const feedbacks = await res.json();
+        if (!Array.isArray(feedbacks) || feedbacks.length === 0) {
+            wall.innerHTML = `<p style="text-align: center; color: var(--text-light); font-style: italic; opacity: 0.6;">No feedbacks found. Be the first! 🚀</p>`;
+            return;
+        }
+        wall.innerHTML = buildFeedbackCards(feedbacks);
 
     } catch (err) {
         console.error("🔥 LOAD ERROR:", err);
-        wall.innerHTML = `<p style="color: #ef4444; text-align: center;">Firebase Load Error: Check Rules or Console.</p>`;
+        wall.innerHTML = `<p style="color: #ef4444; text-align: center;">Feedback load failed. Please try again later.</p>`;
     }
+}
+
+async function saveFeedbackWithFallback(payload) {
+    if (window.db) {
+        await window.db.collection("feedbacks").add(payload);
+        return;
+    }
+
+    const res = await fetch(`${API_BASE}/feedback`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error(`Feedback save failed with status ${res.status}`);
+}
+
+function buildFeedbackCards(feedbacks) {
+    return feedbacks.map((f) => {
+        const safeRating = Math.min(5, Math.max(1, Number(f.rating) || 5));
+        const dateRaw = f.submittedAt || f.date;
+        const dateStr = dateRaw ? new Date(dateRaw).toLocaleString() : 'Recently';
+        return `
+            <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 20px; border-left: 4px solid #f59e0b; transition: 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <strong style="color: #f59e0b; font-size: 1.1rem;">${f.name || 'Anonymous'}</strong>
+                    <div style="color: #fbbf24; font-size: 0.9rem;">
+                        ${'★'.repeat(safeRating)}${'☆'.repeat(5 - safeRating)}
+                    </div>
+                </div>
+                <p style="color: #f1f5f9; margin-bottom: 0.5rem; line-height: 1.5;">"${f.message || ''}"</p>
+                <div style="font-size: 0.8rem; color: var(--text-light); opacity: 0.6; text-align: right;">${dateStr}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+function disableFeedbackInputSuggestions(form) {
+    form.setAttribute('autocomplete', 'off');
+    const fields = form.querySelectorAll('input, textarea');
+    fields.forEach((field) => {
+        field.setAttribute('autocomplete', 'off');
+        field.setAttribute('autocorrect', 'off');
+        field.setAttribute('autocapitalize', 'none');
+        field.setAttribute('spellcheck', 'false');
+    });
 }
 // --- Recommendation Logic (CRITICAL FIX) ---
 function initRecommendationForm() {

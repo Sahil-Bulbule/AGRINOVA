@@ -909,17 +909,17 @@
         </div>
         <div class="weather-container"
             style="max-width: 800px; padding: 3rem; background: var(--card-bg); box-shadow: 0 30px 60px rgba(0,0,0,0.35); border:1px solid var(--card-border);">
-            <form id="feedbackForm" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <form id="feedbackForm" autocomplete="off" style="display: flex; flex-direction: column; gap: 1.5rem;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
                     <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                         <label style="font-weight: 700; color: var(--primary);">Full Name</label>
-                        <input type="text" id="name" placeholder="Enter Your Name" autocomplete="off"
+                        <input type="text" id="name" name="feedback_name" placeholder="Enter Your Name" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
                             style="width: 100%; border-radius: 12px; border: 1px solid var(--card-border); padding: 1rem; outline: none; transition: 0.3s; background: rgba(255,255,255,0.05); color: var(--text-dark);"
                             required>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                         <label style="font-weight: 700; color: var(--primary);">Email Address</label>
-                        <input type="email" id="email" placeholder="Enter Your Email" autocomplete="off"
+                        <input type="email" id="email" name="feedback_email" placeholder="Enter Your Email" autocomplete="new-password" autocorrect="off" autocapitalize="none" spellcheck="false"
                             style="width: 100%; border-radius: 12px; border: 1px solid var(--card-border); padding: 1rem; outline: none; transition: 0.3s; background: rgba(255,255,255,0.05); color: var(--text-dark);"
                             required>
                     </div>
@@ -936,7 +936,7 @@
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                     <label style="font-weight: 700; color: var(--primary);">Message</label>
-                    <textarea rows="5" id="message" placeholder="How can we improve?"
+                    <textarea rows="5" id="message" name="feedback_message" placeholder="How can we improve?" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
                         style="width: 100%; border-radius: 12px; border: 1px solid var(--card-border); padding: 1rem; outline: none; transition: 0.3s; resize: none; background: rgba(255,255,255,0.05); color: var(--text-dark);"
                         required></textarea>
                 </div>
@@ -978,7 +978,7 @@
         </div>
     </div>
 
-    <script src="../database/firebase.js"></script>
+    <script src="firebase.js"></script>
     <script src="main.js"></script>
 </body>
 
