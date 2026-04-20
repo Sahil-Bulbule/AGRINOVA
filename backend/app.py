@@ -70,23 +70,21 @@ def create_app():
         data = request.json or {}
         name = data.get('name')
         email = data.get('email')
-        rating = data.get('rating', 5)
+        rating = int(data.get('rating', 5))
         message = data.get('message')
 
-        # Save to File (for easy viewing)
-        log_path = os.path.join(BASE_DIR, "feedbacks.txt")
         from datetime import datetime
-        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
-        rating_stars = "⭐" * int(rating)
-        log_entry = f"\n--- NEW FEEDBACK ({now}) ---\n"
+        now = datetime.now()
+        timestamp_str = now.strftime("%Y-%m-%d %H:%M:%S")
+
+        log_path = os.path.join(BASE_DIR, "feedbacks.txt")
+        rating_stars = "⭐" * rating
+        log_entry = f"\n--- NEW FEEDBACK ({timestamp_str}) ---\n"
         log_entry += f"USER NAME: {name}\n"
         log_entry += f"EMAIL: {email}\n"
         log_entry += f"RATING: {rating} Stars {rating_stars}\n"
         log_entry += f"MESSAGE: {message}\n"
         log_entry += f"{'-'*40}\n"
-
-        print(f"DEBUG: Saving feedback from {name} to feedbacks.txt")
 
         try:
             with open(log_path, "a", encoding="utf-8") as f:
@@ -94,7 +92,7 @@ def create_app():
         except Exception as e:
             print(f"Error writing to feedback file: {e}")
 
-        return jsonify({"success": True, "message": "Feedback received and logged to file!"})
+        return jsonify({"success": True, "message": "Feedback received and saved to file!"})
 
     @app.get("/get-feedbacks")
     def get_feedbacks():
@@ -116,13 +114,11 @@ def create_app():
                     lines = block.strip().split("\n")
                     entry = {}
                     for line in lines:
-                        # Parsing logic for both formats
                         if "USER NAME:" in line: entry['name'] = line.split("USER NAME:")[1].strip()
                         elif "NAME:" in line: entry['name'] = line.split("NAME:")[1].strip()
                         
                         if "RATING:" in line: 
                             r_str = line.split("RATING:")[1].split("Stars")[0].strip()
-                            # Strip emojis if present in name field (sakshi case)
                             entry['rating'] = int(r_str) if r_str.isdigit() else 5
                         
                         if "MESSAGE:" in line: 
@@ -137,7 +133,6 @@ def create_app():
                     if entry.get('name'):
                         feedbacks.append(entry)
             
-            # Return last 10 feedbacks
             return jsonify(feedbacks[::-1][:10])
         except Exception as e:
             print(f"Error reading feedbacks: {e}")
@@ -158,4 +153,3 @@ app = create_app()
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
-

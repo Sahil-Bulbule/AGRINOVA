@@ -1,7 +1,7 @@
 // 🔗 Backend API Configuration
-const RENDER_URL = "https://agrinova-smart-agriculture-web-platform-3d16.onrender.com"; 
-const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname === "") 
-    ? "http://localhost:5000" 
+const RENDER_URL = "https://agrinova-smart-agriculture-web-platform-3d16.onrender.com";
+const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname === "")
+    ? "http://localhost:5000"
     : RENDER_URL;
 
 console.log("🚀 AgriNova API Base Connected:", API_BASE);
@@ -30,10 +30,12 @@ function initApp() {
     initTrendsSelector();       // new dropdown logic
     initAIAssistant();
     initFeedbackForm();
+    loadFeedbacksFromFirestore();
     initRecommendationForm();
     initTechniques();
     initIndiaMapTrends();
     initSidebar();
+    initDropdownVisibilityFix();
 }
 
 function initSidebar() {
@@ -54,7 +56,7 @@ function initSidebar() {
     // Close on link click
     navLinks.forEach(link => {
         link.onclick = (e) => {
-            if (window.innerWidth < 1024) toggleSidebar(); 
+            if (window.innerWidth < 1024) toggleSidebar();
         };
     });
 
@@ -80,30 +82,45 @@ async function fetchWeather(city) {
     const container = document.getElementById('weatherDashboard');
     if (!container) return;
 
+    clearWeatherError();
+
     try {
         const res = await fetch(`${API_BASE}/weather?city=${encodeURIComponent(city)}`);
         const data = await res.json();
-        if (!res.ok || data.error) throw new Error(data.error || `Status ${res.status}`);
+        if (!res.ok || data.error) {
+            const apiError = data?.error || `Status ${res.status}`;
+            const notFound = res.status === 404 || /not found|invalid city|city not found/i.test(apiError);
+            if (notFound) {
+                const typedCity = city?.trim() || "given location";
+                showWeatherError(`State/City "${typedCity}" not found. Please check spelling and try again.`);
+                return;
+            }
+            throw new Error(apiError);
+        }
         renderWeather(data);
     } catch (err) {
         console.error("Weather fetch failed:", err);
-        showWeatherError("Weather service unavailable. Please try again later.", city);
+        showWeatherError("Weather service unavailable right now. Please try again in a moment.");
     }
 }
 
-function showWeatherError(message, fallbackCity = "Lucknow") {
-    showToastError("⚠️ Live API failed. Showing last known state for " + fallbackCity);
-    renderWeather({
-        city: fallbackCity,
-        temp: 32,
-        description: "haze",
-        humidity: 31,
-        wind_speed: 1.54,
-        pressure: 1005,
-        feels_like: 31,
-        icon: "50n",
-        suggestion: "Weather is normal for field work."
-    });
+function showWeatherError(message) {
+    const container = document.getElementById('weatherDashboard');
+    if (!container) return;
+    container.innerHTML = `
+        <div style="text-align:center; padding:2rem; border-radius:18px; border:1px solid rgba(239,68,68,0.4); background:rgba(239,68,68,0.12); color:#fecaca; font-weight:700;">
+            <i class="fas fa-circle-exclamation" style="margin-right:8px;"></i>${message}
+        </div>
+    `;
+}
+
+function clearWeatherError() {
+    const container = document.getElementById('weatherDashboard');
+    if (!container) return;
+    // If a previous API error box is present, remove it before loading new data.
+    if (container.textContent?.toLowerCase().includes("not found") || container.textContent?.toLowerCase().includes("unavailable")) {
+        container.innerHTML = "";
+    }
 }
 
 function renderWeather(data) {
@@ -137,25 +154,102 @@ function renderWeather(data) {
                 <p style="font-size: 0.95rem; margin-top: 0.3rem; opacity: 0.85;">${data.suggestion || ""}</p>
             </div>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%;">
-                <div style="background: rgba(255,255,255,0.08); padding: 1.3rem; border-radius: 25px; border: 1px solid rgba(255,255,255,0.12); text-align: center;">
-                    <i class="fas fa-droplet" style="color: #3b82f6; font-size: 1.3rem; margin-bottom: 0.8rem;"></i>
-                    <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 0.5rem;">Humidity</p>
-                    <strong style="font-size: 1.25rem;">${data.humidity}%</strong>
+                <style>
+                    .w-stat-card {
+                        padding: 1.3rem; border-radius: 25px; text-align: center;
+                        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+                        cursor: default; position: relative; overflow: hidden;
+                    }
+                    .w-stat-card::before {
+                        content: '';
+                        position: absolute; inset: 0;
+                        border-radius: 25px;
+                        opacity: 0;
+                        transition: opacity 0.3s ease;
+                    }
+                    .w-stat-card:hover { transform: translateY(-6px) scale(1.04); }
+                    .w-stat-card:hover::before { opacity: 1; }
+
+                    /* Blue — Humidity */
+                    .w-stat-blue {
+                        background: rgba(59,130,246,0.08);
+                        border: 1px solid rgba(59,130,246,0.35);
+                        box-shadow: 0 0 18px rgba(59,130,246,0.15);
+                    }
+                    .w-stat-blue:hover {
+                        box-shadow: 0 0 35px rgba(59,130,246,0.55), 0 8px 30px rgba(0,0,0,0.3);
+                        border-color: rgba(59,130,246,0.85);
+                    }
+                    .w-stat-blue::before { background: radial-gradient(circle at 50% 0%, rgba(59,130,246,0.18), transparent 70%); }
+
+                    /* Teal — Wind Speed */
+                    .w-stat-teal {
+                        background: rgba(16,185,129,0.08);
+                        border: 1px solid rgba(16,185,129,0.35);
+                        box-shadow: 0 0 18px rgba(16,185,129,0.15);
+                    }
+                    .w-stat-teal:hover {
+                        box-shadow: 0 0 35px rgba(16,185,129,0.55), 0 8px 30px rgba(0,0,0,0.3);
+                        border-color: rgba(16,185,129,0.85);
+                    }
+                    .w-stat-teal::before { background: radial-gradient(circle at 50% 0%, rgba(16,185,129,0.18), transparent 70%); }
+
+                    /* Amber — Feels Like */
+                    .w-stat-amber {
+                        background: rgba(245,158,11,0.08);
+                        border: 1px solid rgba(245,158,11,0.35);
+                        box-shadow: 0 0 18px rgba(245,158,11,0.15);
+                    }
+                    .w-stat-amber:hover {
+                        box-shadow: 0 0 35px rgba(245,158,11,0.55), 0 8px 30px rgba(0,0,0,0.3);
+                        border-color: rgba(245,158,11,0.85);
+                    }
+                    .w-stat-amber::before { background: radial-gradient(circle at 50% 0%, rgba(245,158,11,0.18), transparent 70%); }
+
+                    /* Red — Pressure */
+                    .w-stat-red {
+                        background: rgba(239,68,68,0.08);
+                        border: 1px solid rgba(239,68,68,0.35);
+                        box-shadow: 0 0 18px rgba(239,68,68,0.15);
+                    }
+                    .w-stat-red:hover {
+                        box-shadow: 0 0 35px rgba(239,68,68,0.55), 0 8px 30px rgba(0,0,0,0.3);
+                        border-color: rgba(239,68,68,0.85);
+                    }
+                    .w-stat-red::before { background: radial-gradient(circle at 50% 0%, rgba(239,68,68,0.18), transparent 70%); }
+
+                    .w-stat-card .stat-icon {
+                        font-size: 1.6rem; margin-bottom: 0.8rem; display: block;
+                        filter: drop-shadow(0 0 8px currentColor);
+                    }
+                    .w-stat-card .stat-label {
+                        font-size: 0.8rem; opacity: 0.75; margin-bottom: 0.5rem;
+                        letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600;
+                    }
+                    .w-stat-card .stat-value {
+                        font-size: 1.35rem; font-weight: 900;
+                    }
+                </style>
+
+                <div class="w-stat-card w-stat-blue">
+                    <i class="fas fa-droplet stat-icon" style="color:#60a5fa;"></i>
+                    <p class="stat-label">Humidity</p>
+                    <strong class="stat-value" style="color:#93c5fd;">${data.humidity}%</strong>
                 </div>
-                <div style="background: rgba(255,255,255,0.08); padding: 1.3rem; border-radius: 25px; border: 1px solid rgba(255,255,255,0.12); text-align: center;">
-                    <i class="fas fa-wind" style="color: #10b981; font-size: 1.3rem; margin-bottom: 0.8rem;"></i>
-                    <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 0.5rem;">Wind Speed</p>
-                    <strong style="font-size: 1.25rem;">${data.wind_speed ?? data.wind?.speed ?? 0} m/s</strong>
+                <div class="w-stat-card w-stat-teal">
+                    <i class="fas fa-wind stat-icon" style="color:#34d399;"></i>
+                    <p class="stat-label">Wind Speed</p>
+                    <strong class="stat-value" style="color:#6ee7b7;">${data.wind_speed ?? data.wind?.speed ?? 0} m/s</strong>
                 </div>
-                <div style="background: rgba(255,255,255,0.08); padding: 1.3rem; border-radius: 25px; border: 1px solid rgba(255,255,255,0.12); text-align: center;">
-                    <i class="fas fa-temperature-full" style="color: #f59e0b; font-size: 1.3rem; margin-bottom: 0.8rem;"></i>
-                    <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 0.5rem;">Feels Like</p>
-                    <strong style="font-size: 1.25rem;">${Math.round(data.feels_like ?? data.temp)}°C</strong>
+                <div class="w-stat-card w-stat-amber">
+                    <i class="fas fa-temperature-full stat-icon" style="color:#fbbf24;"></i>
+                    <p class="stat-label">Feels Like</p>
+                    <strong class="stat-value" style="color:#fcd34d;">${Math.round(data.feels_like ?? data.temp)}°C</strong>
                 </div>
-                <div style="background: rgba(255,255,255,0.08); padding: 1.3rem; border-radius: 25px; border: 1px solid rgba(255,255,255,0.12); text-align: center;">
-                    <i class="fas fa-gauge-high" style="color: #ef4444; font-size: 1.3rem; margin-bottom: 0.8rem;"></i>
-                    <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 0.5rem;">Pressure</p>
-                    <strong style="font-size: 1.25rem;">${data.pressure ?? 0} hPa</strong>
+                <div class="w-stat-card w-stat-red">
+                    <i class="fas fa-gauge-high stat-icon" style="color:#f87171;"></i>
+                    <p class="stat-label">Pressure</p>
+                    <strong class="stat-value" style="color:#fca5a5;">${data.pressure ?? 0} hPa</strong>
                 </div>
             </div>
         </div>
@@ -164,11 +258,11 @@ function renderWeather(data) {
 
 // --- Trends Dropdown Selector ---
 function initTrendsSelector() {
-    const select      = document.getElementById('trendsStateSelect');
-    const otherWrap   = document.getElementById('trendsOtherWrap');
-    const otherInput  = document.getElementById('trendsOtherInput');
-    const searchBtn   = document.getElementById('trendsSearchBtn');
-    const errorDiv    = document.getElementById('trendsError');
+    const select = document.getElementById('trendsStateSelect');
+    const otherWrap = document.getElementById('trendsOtherWrap');
+    const otherInput = document.getElementById('trendsOtherInput');
+    const searchBtn = document.getElementById('trendsSearchBtn');
+    const errorDiv = document.getElementById('trendsError');
 
     if (!select || !searchBtn) return;
 
@@ -218,6 +312,21 @@ function initTrendsSelector() {
     }
 }
 
+function initDropdownVisibilityFix() {
+    const selects = Array.from(document.querySelectorAll('select'));
+    if (!selects.length) return;
+
+    selects.forEach(select => {
+        // Keep browser-native dropdown behavior for reliable mouse handling.
+        select.addEventListener('focus', () => {
+            select.classList.add('dropdown-expanded');
+        });
+        select.addEventListener('blur', () => {
+            select.classList.remove('dropdown-expanded');
+        });
+    });
+}
+
 function showTrendsSelectorError(msg, type = 'error') {
     const err = document.getElementById('trendsError');
     if (!err) return;
@@ -238,7 +347,7 @@ function clearTrendsError() {
 // --- Live Trends Logic ---
 async function fetchLiveTrends(state) {
     try {
-        const res  = await fetch(`${API_BASE}/live-trends?state=${encodeURIComponent(state)}`);
+        const res = await fetch(`${API_BASE}/live-trends?state=${encodeURIComponent(state)}`);
         const data = await res.json();
         if (data.success === false) {
             showTrendsSelectorError(`ℹ️ ${data.message}`, 'info');
@@ -268,15 +377,15 @@ function renderLiveTrends(crops, stateName = "Selected State") {
         const card = document.createElement('div');
         card.className = 'trends-card';
         card.style.cssText = "display: flex; flex-direction: column; justify-content: space-between; height: 100%;";
-        
+
         const iconUrls = {
-            "Wheat": "wheat.png", "Rice": "rice-bowl.png", "Onion": "onion.png", 
+            "Wheat": "wheat.png", "Rice": "rice-bowl.png", "Onion": "onion.png",
             "Tomato": "tomato.png", "Sugarcane": "sugarcane.png"
         };
         const iconName = iconUrls[p.name] || "leaf.png";
-        
-        const isUp = (p.price % 3) !== 0; 
-        const changeValue = Math.floor(p.price * (Math.random() * 0.08 + 0.01)); 
+
+        const isUp = (p.price % 3) !== 0;
+        const changeValue = Math.floor(p.price * (Math.random() * 0.08 + 0.01));
         const trendClass = isUp ? 'trend-up' : 'trend-down';
         const trendIcon = isUp ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down';
         const trendText = isUp ? `+₹${changeValue}` : `-₹${changeValue}`;
@@ -380,7 +489,7 @@ function renderChart(labels, datasets, selectedMonth = "") {
             maintainAspectRatio: false,
             interaction: { mode: 'index', intersect: false },
             plugins: {
-                legend: { 
+                legend: {
                     position: 'top',
                     labels: { color: '#ffffff', font: { weight: 'bold', size: 13 }, usePointStyle: true, padding: 20 }
                 },
@@ -469,7 +578,7 @@ function initFeedbackForm() {
     const updateStarDisplay = (rating) => {
         stars.forEach(star => {
             const value = Number(star.getAttribute('data-rating'));
-            if (value <= rating) { star.classList.add('fas'); star.classList.remove('far'); } 
+            if (value <= rating) { star.classList.add('fas'); star.classList.remove('far'); }
             else { star.classList.remove('fas'); star.classList.add('far'); }
         });
     };
@@ -481,38 +590,113 @@ function initFeedbackForm() {
     });
     form.onsubmit = async (e) => {
         e.preventDefault();
+        const btn = form.querySelector('button[type="submit"]');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending to Cloud...';
+        }
+
         const payload = {
             name: document.getElementById('name').value,
             email: document.getElementById('email').value,
             rating: selectedRating || 5,
-            message: document.getElementById('message').value
+            message: document.getElementById('message').value,
+            submittedAt: new Date().toISOString()
         };
+
+        console.log("📝 Sending to Firestore Collection 'feedbacks':", payload);
+
         try {
-            const res = await fetch(`${API_BASE}/feedback`, {
-                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
-            });
-            const result = await res.json();
-            if (result.success) {
-                form.innerHTML = `<div style="text-align:center; padding:2.5rem 1rem; color:#f8fafc;"><h3 style="margin:0 0 0.4rem;">Thank you!</h3><p style="margin:0; color:#cbd5e1;">Your feedback has been submitted successfully.</p></div>`;
-                showToastError("✅ Feedback Saved to feedbacks.txt!");
-            }
+            // Use the global 'db' variable from firebase.js
+            if (!db) throw new Error("Firebase Database (db) is not initialized!");
+
+            await db.collection("feedbacks").add(payload);
+            
+            console.log("✅ SUCCESS: Saved to Firebase!");
+
+            form.innerHTML = `
+                <div style="
+                    text-align: center;
+                    padding: 3rem 2rem;
+                    background: linear-gradient(135deg, rgba(76,175,80,0.12), rgba(56,142,60,0.06));
+                    border: 1px solid rgba(76,175,80,0.4);
+                    border-radius: 24px;
+                    box-shadow: 0 0 30px rgba(76,175,80,0.2), 0 20px 50px rgba(0,0,0,0.3);
+                    animation: fadeInUp 0.5s ease forwards;
+                ">
+                    <div style="font-size: 3.5rem; margin-bottom: 1rem;">🎉</div>
+                    <h3 style="margin: 0 0 0.6rem; font-size: 1.8rem; font-weight: 900; color: #4ade80;">Thank You!</h3>
+                    <p style="margin: 0 0 0.5rem; color: #a7f3d0; font-size: 1.05rem; font-weight: 600;">Your feedback has been submitted successfully.</p>
+                    <p style="margin: 0; color: rgba(161,233,161,0.6); font-size: 0.9rem;">It means a lot to us 🌾</p>
+                </div>
+            `;
+            loadFeedbacksFromFirestore();
+
         } catch (err) {
-            console.error(err);
-            showToastError("❌ Feedback submit nahi hua. Backend check karein.");
+            console.error("🔥 FIRESTORE ERROR:", err);
+
+            // Show inline error — no alert popup
+            const errBox = document.createElement('div');
+            errBox.style.cssText = "margin-top:1rem; padding:1rem 1.5rem; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.35); border-radius:14px; color:#fca5a5; font-weight:700; font-size:0.95rem; text-align:center;";
+            errBox.textContent = "⚠️ Could not submit feedback. Please try again.";
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-redo"></i> Retry';
+                btn.parentElement.insertBefore(errBox, btn);
+            }
         }
     };
 }
 
+async function loadFeedbacksFromFirestore() {
+    const wall = document.getElementById('feedbacksWall');
+    if (!wall) return;
+
+    try {
+        if (!db) return;
+        const querySnapshot = await db.collection("feedbacks")
+            .limit(10)
+            .get();
+        
+        if (querySnapshot.empty) {
+            wall.innerHTML = `<p style="text-align: center; color: var(--text-light); font-style: italic; opacity: 0.6;">No feedbacks found in Firebase. Be the first! 🚀</p>`;
+            return;
+        }
+
+        let html = '';
+        querySnapshot.forEach((doc) => {
+            const f = doc.data();
+            const dateStr = f.submittedAt ? new Date(f.submittedAt).toLocaleString() : 'Recently';
+            html += `
+                <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 20px; border-left: 4px solid #f59e0b; transition: 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <strong style="color: #f59e0b; font-size: 1.1rem;">${f.name}</strong>
+                        <div style="color: #fbbf24; font-size: 0.9rem;">
+                            ${'★'.repeat(f.rating)}${'☆'.repeat(5 - f.rating)}
+                        </div>
+                    </div>
+                    <p style="color: #f1f5f9; margin-bottom: 0.5rem; line-height: 1.5;">"${f.message}"</p>
+                    <div style="font-size: 0.8rem; color: var(--text-light); opacity: 0.6; text-align: right;">${dateStr}</div>
+                </div>
+            `;
+        });
+        wall.innerHTML = html;
+
+    } catch (err) {
+        console.error("🔥 LOAD ERROR:", err);
+        wall.innerHTML = `<p style="color: #ef4444; text-align: center;">Firebase Load Error: Check Rules or Console.</p>`;
+    }
+}
 // --- Recommendation Logic (CRITICAL FIX) ---
 function initRecommendationForm() {
     const form = document.getElementById('recommendationForm');
     if (!form) return;
     form.onsubmit = async (e) => {
         e.preventDefault();
-        
+
         const btn = form.querySelector('button[type="submit"]');
         const output = document.getElementById('recommendationResult');
-        
+
         if (btn) {
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating Advice...';
@@ -539,7 +723,7 @@ function initRecommendationForm() {
             console.log("Received Recommendation Data:", data);
 
             lastRecommendationData = { crop: data.recommended_crop, reason: data.reason, ...payload };
-            
+
             if (output) {
                 output.style.display = 'flex';
                 output.innerHTML = `
@@ -627,12 +811,12 @@ function initIndiaMapTrends() {
     indiaMap = L.map("indiaStateTrendsMap").setView([22.8, 79.2], 5);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "&copy; OpenStreetMap" }).addTo(indiaMap);
     const stateCoords = {
-        "Andhra Pradesh": [15.9129, 79.7400], "Arunachal Pradesh": [28.2180, 94.7278], "Assam": [26.2006, 92.9376], "Bihar": [25.0961, 85.3131], 
-        "Chhattisgarh": [21.2787, 81.8661], "Goa": [15.2993, 74.1240], "Gujarat": [22.2587, 71.1924], "Haryana": [29.0588, 76.0856], 
-        "Himachal Pradesh": [31.1048, 77.1734], "Jharkhand": [23.6102, 85.2799], "Karnataka": [15.3173, 75.7139], "Kerala": [10.8505, 76.2711], 
-        "Madhya Pradesh": [22.9734, 78.6569], "Maharashtra": [19.7515, 75.7139], "Manipur": [24.6637, 93.9063], "Meghalaya": [25.4670, 91.3662], 
-        "Mizoram": [23.1645, 92.9376], "Nagaland": [26.1584, 94.5624], "Odisha": [20.9517, 85.0985], "Punjab": [31.1471, 75.3412], 
-        "Rajasthan": [27.0238, 74.2179], "Sikkim": [27.5330, 88.5122], "Tamil Nadu": [11.1271, 78.6569], "Telangana": [18.1124, 79.0193], 
+        "Andhra Pradesh": [15.9129, 79.7400], "Arunachal Pradesh": [28.2180, 94.7278], "Assam": [26.2006, 92.9376], "Bihar": [25.0961, 85.3131],
+        "Chhattisgarh": [21.2787, 81.8661], "Goa": [15.2993, 74.1240], "Gujarat": [22.2587, 71.1924], "Haryana": [29.0588, 76.0856],
+        "Himachal Pradesh": [31.1048, 77.1734], "Jharkhand": [23.6102, 85.2799], "Karnataka": [15.3173, 75.7139], "Kerala": [10.8505, 76.2711],
+        "Madhya Pradesh": [22.9734, 78.6569], "Maharashtra": [19.7515, 75.7139], "Manipur": [24.6637, 93.9063], "Meghalaya": [25.4670, 91.3662],
+        "Mizoram": [23.1645, 92.9376], "Nagaland": [26.1584, 94.5624], "Odisha": [20.9517, 85.0985], "Punjab": [31.1471, 75.3412],
+        "Rajasthan": [27.0238, 74.2179], "Sikkim": [27.5330, 88.5122], "Tamil Nadu": [11.1271, 78.6569], "Telangana": [18.1124, 79.0193],
         "Tripura": [23.9408, 91.9882], "Uttar Pradesh": [26.8467, 80.9462], "Uttarakhand": [30.0668, 79.0193], "West Bengal": [22.9868, 87.8550]
     };
     Object.entries(stateCoords).forEach(([name, coords]) => {
@@ -657,7 +841,7 @@ async function handleStateMapClick(stateName, markerNode) {
         renderIndiaTrendsUI(data);
         markerNode.bindPopup(`<strong>${data.state}</strong><br/>Top Trend: ${data.top_trend}`).openPopup();
         if (trendBox) { trendBox.style.display = "block"; trendBox.innerHTML = `Trending Crop: ${data.top_trend}`; }
-    } catch (error) { console.error(error); } 
+    } catch (error) { console.error(error); }
     finally { if (loading) loading.style.display = "none"; }
 }
 
@@ -686,7 +870,7 @@ function renderIndiaTrendsUI(payload) {
     lastLiveTrend = { dominating: high.name, highest_price: high.price, lowest_crop: low.name, state: payload.state };
     if (indiaTrendsChart) indiaTrendsChart.destroy();
     indiaTrendsChart = new Chart(chartCanvas.getContext("2d"), {
-        type: "bar", data: { labels, datasets: [{ label: `${payload.state} Prices`, data: prices, backgroundColor: ["#22c55e","#3b82f6","#f97316","#ef4444","#a855f7"] }] },
+        type: "bar", data: { labels, datasets: [{ label: `${payload.state} Prices`, data: prices, backgroundColor: ["#22c55e", "#3b82f6", "#f97316", "#ef4444", "#a855f7"] }] },
         options: { responsive: true, maintainAspectRatio: false }
     });
 }
@@ -725,7 +909,7 @@ function showPrecautionModal(topic) {
     };
 
     const info = data[topic] || { title: 'Precautions', content: 'General farming safety: Wear protective gear and monitor crop health regularly.' };
-    
+
     // Reuse the AI Modal structure for consistency and premium look
     const modal = document.getElementById('aiAssistantModal');
     if (!modal) {
@@ -747,7 +931,7 @@ function showToastError(msg) {
     t.innerText = msg;
     t.style.cssText = "position:fixed; top:30px; right:30px; background:#ef4444; color:white; padding:15px 25px; border-radius:12px; z-index:9999; opacity:0; transition:0.4s;";
     document.body.appendChild(t);
-    setTimeout(() => { t.style.opacity = '0'; setTimeout(()=>t.remove(), 400); }, 3500);
+    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 400); }, 3500);
 }
 
 
@@ -756,7 +940,7 @@ function initScrollReveal() {
     const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.isIntersecting) { entry.target.classList.add('active'); } 
+            if (entry.isIntersecting) { entry.target.classList.add('active'); }
             else { entry.target.classList.remove('active'); }
         });
     }, { threshold: 0.1 });
